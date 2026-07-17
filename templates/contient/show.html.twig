@@ -1,0 +1,30 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Contient{% endblock %}
+
+{% block body %}
+    <h1>Contient</h1>
+
+    <table class="table">
+        <tbody>
+            <tr>
+                <th>Id</th>
+                <td>{{ contient.id }}</td>
+            </tr>
+            <tr>
+                <th>Quantite</th>
+                <td>{{ contient.quantite }}</td>
+            </tr>
+            <tr>
+                <th>PrixUnitaireCentime</th>
+                <td>{{ contient.prixUnitaireCentime }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_contient_index') }}">back to list</a>
+
+    <a href="{{ path('app_contient_edit', {'id': contient.id}) }}">edit</a>
+
+    {{ include('contient/_delete_form.html.twig') }}
+{% endblock %}

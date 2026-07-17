@@ -1,0 +1,43 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Avis index{% endblock %}
+
+{% block body %}
+    <h1>Avis index</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Title</th>
+                <th>Note</th>
+                <th>Comment</th>
+                <th>Date_notice</th>
+                <th>Checked</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for avi in avis %}
+            <tr>
+                <td>{{ avi.id }}</td>
+                <td>{{ avi.title }}</td>
+                <td>{{ avi.note }}</td>
+                <td>{{ avi.comment }}</td>
+                <td>{{ avi.dateNotice ? avi.dateNotice|date('Y-m-d H:i:s') : '' }}</td>
+                <td>{{ avi.checked ? 'Yes' : 'No' }}</td>
+                <td>
+                    <a href="{{ path('app_avis_show', {'id': avi.id}) }}">show</a>
+                    <a href="{{ path('app_avis_edit', {'id': avi.id}) }}">edit</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="7">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_avis_new') }}">Create new</a>
+{% endblock %}

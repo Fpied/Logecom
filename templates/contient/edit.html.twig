@@ -1,0 +1,13 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Edit Contient{% endblock %}
+
+{% block body %}
+    <h1>Edit Contient</h1>
+
+    {{ include('contient/_form.html.twig', {'button_label': 'Update'}) }}
+
+    <a href="{{ path('app_contient_index') }}">back to list</a>
+
+    {{ include('contient/_delete_form.html.twig') }}
+{% endblock %}

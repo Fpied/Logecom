@@ -1,0 +1,42 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Adresse{% endblock %}
+
+{% block body %}
+    <h1>Adresse</h1>
+
+    <table class="table">
+        <tbody>
+            <tr>
+                <th>Id</th>
+                <td>{{ adresse.id }}</td>
+            </tr>
+            <tr>
+                <th>Street</th>
+                <td>{{ adresse.street }}</td>
+            </tr>
+            <tr>
+                <th>Land</th>
+                <td>{{ adresse.land }}</td>
+            </tr>
+            <tr>
+                <th>Cp</th>
+                <td>{{ adresse.Cp }}</td>
+            </tr>
+            <tr>
+                <th>City</th>
+                <td>{{ adresse.city }}</td>
+            </tr>
+            <tr>
+                <th>Country</th>
+                <td>{{ adresse.country }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_adresse_index') }}">back to list</a>
+
+    <a href="{{ path('app_adresse_edit', {'id': adresse.id}) }}">edit</a>
+
+    {{ include('adresse/_delete_form.html.twig') }}
+{% endblock %}
