@@ -5,63 +5,33 @@
 {% block body %}
 <div class="page">
 
-    <header class="site-header">
-        <div class="identite_site">
-            <div class="etoile_gauche">
-                <div class="premier_etoile haut_gauche_1">
-                </div>
-                <div class="premier_etoile haut_gauche_2">
-                </div>
-                <div class="premier_etoile haut_gauche_3">
-                </div>
-                <div class="premier_etoile milieu_gauche_1">
-                </div>
-                <div class="premier_etoile milieu_gauche_2">
-                </div>
-                <div class="premier_etoile bas_gauche_1">
-                </div>
-            </div>
-            <div class="title_milieu">
-                <h1 class="title">LOGECOM</h1>
-            </div>
-            <div class="etoile_droite">
-                <div class="premier_etoile haut_droite_1">
-                </div>
-                <div class="premier_etoile haut_droite_2">
-                </div>
-                <div class="premier_etoile haut_droite_3">
-                </div>
-                <div class="premier_etoile milieu_droite_1">
-                </div>
-                <div class="premier_etoile milieu_droite_2">
-                </div>
-                <div class="premier_etoile bas_droite_1">
-                </div>
-            </div>
-        </div>
-        </div>
-        <nav class="nav_header">
-            <ul class="nav_header_ul">
-                <li class="li_header"><a class="lien_nav" href="#">ACCUEIL</a></li>
-                <li class="li_header"><a class="lien_nav" href="#">à Propos</a></li>
-                <li class="li_header"><a class="lien_nav" href="#">CONNEXION</a></li>
-                <li class="li_header"><a class="lien_nav" href="#">CONTACTEZ-NOUS</a></li>
-            </ul>
-        </nav>
-    </header>
     <main class="home-content">
         <section class="featured-product">
             <h2>PRODUIT MIS EN AVANT</h2>
 
+            {% if produit %}
+
             <article class="product-card">
-                <h3>TITRE DU PRODUIT</h3>
+                <h3>{{ produit.title }}</h3>
 
                 {# On ajoutera l'image ici #}
 
-                <p>UN PETIT BOUT DE DESCRIPTION</p>
+                <p>{{ produit.description }}</p>
 
-                <a class="buy-button" href="#">ACHETER</a>
+                <p>Prix : {{ (produit.centPrice / 100)|number_format(2, ',', '')}} €</p>
+
+                <p>Stock : {{ produit.stock }}</p>
+
+                <a
+                    class="buy_button"
+                    href="{{ path('app_produit_show', { id: produit.id })}}"
+                >
+                    VOIR LE PRODUIT
+                </a>
             </article>
+            {% else %}
+                <p>Aucun produit disponible pour le moment.</p>
+            {% endif %}
         </section>
         <aside class="cart">
             <h2>PANIER</h2>
