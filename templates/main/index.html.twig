@@ -1,41 +1,92 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Hello MainController!{% endblock %}
+{% block title %}Accueil{% endblock %}
 
 {% block body %}
 <div class="page">
 
     <main class="home-content">
+    <aside class="cart">
+            <h2>PANIER</h2>
+            <p>Votre panier est vide.</p>
+        </aside>
+
         <section class="featured-product">
             <h2>PRODUIT MIS EN AVANT</h2>
 
-            {% if produit %}
+            {% if produits is not empty %}
 
-            <article class="product-card">
-                <h3>{{ produit.title }}</h3>
+                <div class="products-grid">
 
-                {# On ajoutera l'image ici #}
+                    {% for produit in produits %}
+                        <article class="product-card">
+                            
+                            <div class="product-image">
+                                {% set imagePrincipale = null %}
 
-                <p>{{ produit.description }}</p>
+                                {% for image in produit.images %}
+                                    {% if image.mainImage %}
+                                        {% set imagePrincipale = image %}
+                                    {% endif %}
+                                {% endfor %}
 
-                <p>Prix : {{ (produit.centPrice / 100)|number_format(2, ',', '')}} €</p>
+                                {% if imagePrincipale %}
+                                    <img src="{{ asset('uploads/images/' ~ imagePrincipale.url) }}" alt="{{ produit.title }}">
+                                {% else %}
+                                    <div class="product-image-placeholder">
+                                        Aucune image
+                                    </div>
+                                {% endif %}
+                            </div>
 
-                <p>Stock : {{ produit.stock }}</p>
+                            <div class="product-card-content">
+                                <h3>{{ produit.title }}</h3>
 
-                <a
-                    class="buy_button"
-                    href="{{ path('app_produit_show', { id: produit.id })}}"
-                >
-                    VOIR LE PRODUIT
-                </a>
-            </article>
+                                <p class="product-description">
+                                    {{ produit.description|slice(0, 120) }}
+                                    {% if produit.description|length> 120 %}...{% endif %}
+                                </p>
+
+                                <p class="product-price">
+                                    {{ (produit.centPrice / 100 )|number_format(2, ',', ' ') }} €
+                                </p>
+
+                                <p class="product-stock">
+                                    {% if produit.stock > 0 %}
+                                        {{ produit.stock }} disponible(s)
+                                    {% else %}
+                                        Rupture de stock
+                                    {% endif %}
+                                </p>
+
+                                <div class="product-actions">
+                                    <a
+                                        class="view-button"
+                                        href="{{ path('app_produit_show', { id: produit.id }) }}"
+                                    >
+                                        Voir le produit
+                                    </a>
+
+                                    {% if produit.stock > 0 %}
+                                        <a
+                                            class="cart-button"
+                                            href="#"
+                                        >
+                                        Ajouter au panier
+                                        </a>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </article>
+                    {% endfor %}
+                </div>
+            
             {% else %}
                 <p>Aucun produit disponible pour le moment.</p>
             {% endif %}
         </section>
-        <aside class="cart">
-            <h2>PANIER</h2>
-        </aside>
+        
+        
     </main>
 </div>
 {% endblock %}

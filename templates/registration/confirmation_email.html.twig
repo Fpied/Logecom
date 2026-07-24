@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Confirmation de votre compte Logecom</title>
+</head>
+<body>
+    <h1>Bienvenue sur Logecom</h1>
+
+    <p>
+        Bonjour {{ utilisateur.firstname }},
+    </p>
+
+    <p>
+        Cliquez sur le lien ci-dessous pour confirmer votre adresse e-mail :
+    </p>
+
+    <p>
+        <a href="{{ signedUrl|raw }}">
+            Confirmer mon adresse e-mail
+        </a>
+    </p>
+
+    <p>
+        Ce lien expire
+        {{ expiresAtMessageKey|trans(
+            expiresAtMessageData,
+            'VerifyEmailBundle'
+        ) }}.
+    </p>
+</body>
+</html>

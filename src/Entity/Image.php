@@ -16,13 +16,14 @@ class Image
     #[ORM\Column(length: 255)]
     private ?string $url = null;
 
-    #[ORM\Column]
-    private ?bool $main_image = null;
+    #[ORM\Column(options: ['default' => false])]
+    private ?bool $main_image = false;
 
-    #[ORM\Column]
-    private ?int $orderImage = null;
+    #[ORM\Column(options: ['default' => 0])]
+    private ?int $orderImage = 0;
 
     #[ORM\ManyToOne(inversedBy: 'images')]
+    #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
     private ?Produit $produit = null;
 
     public function getId(): ?int
@@ -42,7 +43,7 @@ class Image
         return $this;
     }
 
-    public function isMainImage(): ?bool
+    public function isMainImage(): bool
     {
         return $this->main_image;
     }
@@ -54,7 +55,7 @@ class Image
         return $this;
     }
 
-    public function getOrderImage(): ?int
+    public function getOrderImage(): int
     {
         return $this->orderImage;
     }

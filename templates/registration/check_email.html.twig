@@ -1,0 +1,28 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+    Confirmez votre adresse email
+{% endblock %}
+
+{% block body %}
+    <main class="container py-5">
+        <div class="mx-auto text-center" style="max-width: 600px;">
+            <h1>Vérifiez votre boite mail</h1>
+            <p>
+                Un lien de confirmation vient de vous être envoyé.
+            </p>
+
+            <p>
+                Cliquez sur ce lien afin d'activer votre compte Logecom.
+            </p>
+
+            <p class="text-muted">
+                Si vous ne recevez pas l'email, vérifiez votre dossier de courrier indésirable.
+            </p>
+
+            <a href="{{ path('app_login')}}" class="btn btn-primary">
+                Aller à la connexion
+            </a>
+        </div>    
+    </main>
+{% endblock %}

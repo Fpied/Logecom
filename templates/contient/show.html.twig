@@ -17,7 +17,7 @@
             </tr>
             <tr>
                 <th>PrixUnitaireCentime</th>
-                <td>{{ contient.prixUnitaireCentime }}</td>
+                <td>{{ (produit.centPrice / 100)|number_format(2, ',', ' ') }}</td>
             </tr>
         </tbody>
     </table>

@@ -21,7 +21,12 @@ class Message
     private ?\DateTime $date_send = null;
 
     #[ORM\Column]
-    private ?bool $realu = null;
+    private ?bool $realu = false;
+
+    public function __construct(){
+        $this->date_send = new \DateTime();
+        $this->realu = false;
+    }
 
     public function getId(): ?int
     {

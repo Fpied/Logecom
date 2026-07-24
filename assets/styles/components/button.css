@@ -1,0 +1,23 @@
+.view-button,
+.cart-button {
+    display: block;
+    width: 100%;
+    padding: 12px 16px;
+    border: none;
+    border-radius: 8px;
+    font: inherit;
+    font-weight: 700;
+    text-align: center;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.view-button {
+    color: #000000;
+    background: #f1f1f1;
+}
+
+.cart-button {
+    color: #000000;
+    background: #ffff00;
+}

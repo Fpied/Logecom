@@ -1,4 +1,34 @@
-{{ form_start(form) }}
-    {{ form_widget(form) }}
-    <button class="btn">{{ button_label|default('Save') }}</button>
+{{ form_start(form, {
+    attr: {
+        class: 'produit-form'
+    }
+}) }}
+
+    {{ form_row(form.title) }}
+    {{ form_row(form.description) }}
+    {{ form_row(form.centPrice) }}
+    {{ form_row(form.stock) }}
+    {{ form_row(form.state) }}
+    {{ form_row(form.categorie) }}
+
+    {% if produit is defined and produit.images|length > 0 %}
+        <div class="produit-images">
+            <h2>Images actuelles</h2>
+
+            {% for image in produit.images %}
+                <img
+                    src="{{ asset('uploads/images/' ~ image.url) }}"
+                    alt="Image de {{ produit.title }}"
+                    class="produit-image"
+                >
+            {% endfor %}
+        </div>
+    {% endif %}
+
+    {{ form_row(form.imageFiles) }}
+
+    <button class="btn btn-primary">
+        {{ button_label|default('Enregistrer') }}
+    </button>
+
 {{ form_end(form) }}

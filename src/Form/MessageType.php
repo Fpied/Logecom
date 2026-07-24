@@ -4,6 +4,8 @@ namespace App\Form;
 
 use App\Entity\Message;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -12,10 +14,20 @@ class MessageType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('contenu')
-            ->add('date_send')
-            ->add('realu')
-        ;
+            ->add('contenu', TextareaType::class, [
+                'label' => 'Votre message',
+                'attr' => [
+                    'rows' => 8,
+                    'placeholder' => 'Ecrivez votre message ici ...'
+                ]
+            ])
+            ->add('envoyer', SubmitType::class, [
+                'label' => 'Envoyer',
+                'attr' => [
+                    'class' => 'form-submit',
+                ],
+            ]);
+            
     }
 
     public function configureOptions(OptionsResolver $resolver): void

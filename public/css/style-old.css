@@ -194,6 +194,267 @@ main{
     text-align: center;
     
 }
+.logo{
+    width: 25px;
+    height: 25px;
+}
+
+.produit-page {
+    min-height: 100vh;
+    padding: 40px 20px;
+    background: #ffffff;
+    color: #222222;
+}
+
+.produit-container {
+    width: 100%;
+    max-width: 650px;
+    margin: 0 auto;
+}
+
+.produit-container h1 {
+    margin-bottom: 30px;
+    text-align: center;
+}
+
+.produit-form {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    padding: 30px;
+    background: #ffffff;
+    border: 1px solid #dddddd;
+    border-radius: 10px;
+    box-shadow: 0 4px 18px rgb(0 0 0 / 10%);
+}
+
+.produit-form > div {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.produit-form label {
+    color: #222222;
+    font-weight: 600;
+}
+
+.produit-form input,
+.produit-form textarea,
+.produit-form select {
+    width: 100%;
+    padding: 10px;
+    color: #222222;
+    background: #ffffff;
+    border: 1px solid #aaaaaa;
+    border-radius: 5px;
+}
+
+.produit-images {
+    text-align: center;
+}
+
+.produit-image {
+    width: 220px;
+    max-height: 220px;
+    margin: 8px;
+    object-fit: contain;
+    border: 1px solid #dddddd;
+    border-radius: 8px;
+}
+
+.btn {
+    padding: 10px 18px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.btn-primary {
+    color: white;
+    background: #1769aa;
+}
+
+.btn-danger {
+    color: white;
+    background: #c62828;
+}
+
+.back-link {
+    display: block;
+    margin: 20px 0;
+    text-align: center;
+}
+
+.produit-list-container {
+    width: 95%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 30px 20px;
+}
+
+.produit-list-container h1 {
+    margin-bottom: 30px;
+    text-align: center;
+}
+
+.table-wrapper {
+    width: 100%;
+    overflow-x: auto;
+}
+
+.produit-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: #ffffff;
+    color: #222222;
+}
+
+.produit-table th,
+.produit-table td {
+    padding: 12px;
+    text-align: center;
+    vertical-align: middle;
+    border: 1px solid #cccccc;
+}
+
+.produit-table th {
+    font-weight: bold;
+    background: #eeeeee;
+}
+
+.produit-table tbody tr:nth-child(even) {
+    background: #f8f8f8;
+}
+
+.produit-thumbnail {
+    width: 90px;
+    height: 90px;
+    object-fit: contain;
+    border: 1px solid #cccccc;
+    border-radius: 6px;
+}
+
+.actions-cell {
+    white-space: nowrap;
+}
+
+.actions-cell a {
+    margin: 0 5px;
+}
+
+.add-product-link {
+    display: block;
+    width: fit-content;
+    margin: 25px auto 0;
+}
+
+.produit-show-image {
+    margin: 20px 0;
+    text-align: center;
+}
+
+.produit-image-large {
+    width: 350px;
+    max-width: 100%;
+    max-height: 350px;
+    object-fit: contain;
+    border-radius: 10px;
+}
+
+.produit-image {
+    width: 100px;
+    height: 100px;
+    object-fit: contain;
+    display: block;
+    margin: 20px auto;
+    border-radius: 10px;
+    border: 1px solid #ddd;
+}
+
+.home-content {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 300px;
+    gap: 2rem;
+    align-items: start;
+}
+
+.products-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+    gap: 1.5rem;
+}
+
+.product-card {
+    overflow: hidden;
+    border: 1px solid #ddd;
+    border-radius: 12px;
+    background: #fff;
+}
+
+.product-image {
+    width: 100%;
+    aspect-ratio: 4 / 3;
+    overflow: hidden;
+    background: #eee;
+}
+
+.product-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.product-image-placeholder {
+    display: flex;
+    width: 100%;
+    height: 100%;
+    align-items: center;
+    justify-content: center;
+}
+
+.product-card-content {
+    padding: 1rem;
+}
+
+.product-description {
+    min-height: 3rem;
+}
+
+.product-price {
+    font-size: 1.2rem;
+    font-weight: 700;
+}
+
+.product-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.view-button,
+.cart-button {
+    display: block;
+    padding: 0.75rem 1rem;
+    border-radius: 8px;
+    text-align: center;
+    text-decoration: none;
+}
+
+.cart {
+    position: sticky;
+    top: 1rem;
+}
+
+@media (max-width: 850px) {
+    .home-content {
+        grid-template-columns: 1fr;
+    }
+
+    .cart {
+        position: static;
+    }
+}
 
 
 

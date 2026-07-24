@@ -1,0 +1,105 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Mon espace client{% endblock %}
+
+{% block body %}
+<main>
+<h2>Menu</h2>
+
+    <div class="list-group">
+
+        <a href="{{ path('app_produit_new') }}" class="list-group-item list-group-item-action">
+            Mettre un produit en vente
+        </a>
+
+        <a href="#mes-produits" class="list-group-item list-group-item-action">
+            Mes produits en vente
+        </a>
+
+        <a href="#" class="list-group-item list-group-item-action">
+            Modifier mon profil
+        </a>
+
+        <a href="#" class="list-group-item list-group-item-action">
+            Changer mon mot de passe
+        </a>
+
+        <a href="{{ path('app_logout') }}" class="list-group-item list-group-item-action">
+            Se déconnecter
+        </a>
+    </div>
+<div class="container mt-5">
+
+
+    <h1>Mon espace client</h1>
+
+    <hr>
+
+    <h3>Bienvenue, {{ utilisateur.firstname }} !</h3>
+
+    <p>
+        Vous êtes connecté avec l'adresse :
+        <strong>{{ utilisateur.email }}</strong>
+    </p>
+    <p>
+        Status du compte :
+        {% if utilisateur.isVerified %}
+            <span class="text-success">Vérifié</span>
+        {% else %}
+            <span class="text-danger">Non vérifié</span>
+        {% endif %} 
+    </p>
+    <hr>
+
+    
+    <hr>
+
+    <section id="mes-produits">
+        <h2>Mes produits en vente</h2>
+
+        {% if produits is empty %}
+            <p>Vous n’avez encore aucun produit en vente.</p>
+
+            <a href="{{ path('app_produit_new') }}" class="btn btn-primary">
+                Mettre mon premier produit en vente
+            </a>
+        {% else %}
+            <div class="row">
+                {% for produit in produits %}
+                    <div class="col-md-4 mb-3">
+                        <div class="card h-100">
+                            <div class="card-body">
+                                <h3 class="card-title h5">
+                                    {{ produit.title }}
+                                </h3>
+
+                                <p class="card-text">
+                                    {{ produit.description }}
+                                </p>
+
+                                <p>
+                                    <strong>
+                                        {{ (produit.centPrice / 100)|number_format(2, ',', ' ') }} €
+                                    </strong>
+                                </p>
+
+                                <a href="{{ path('app_produit_show', {id: produit.id}) }}"
+                                class="btn btn-outline-primary">
+                                    Voir
+                                </a>
+
+                                <a href="{{ path('app_produit_edit', {id: produit.id}) }}"
+                                class="btn btn-outline-secondary">
+                                    Modifier
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+    </section>
+
+</div>
+</main>
+{% endblock %}

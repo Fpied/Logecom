@@ -1,0 +1,15 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    min-height: 100vh;
+
+    font-family: 'futuramabold', sans-serif;
+    line-height: 1.7;
+
+    color: var(--yellow);
+    background: var(--bg-dark);
+}

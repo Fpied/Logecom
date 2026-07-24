@@ -1,0 +1,13 @@
+main {
+    min-height: 100vh;
+
+    color: var(--bg-dark);
+    background: var(--wight);
+
+    text-align: center;
+}
+
+.logo {
+    width: 25px;
+    height: 25px;
+}

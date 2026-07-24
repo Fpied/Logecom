@@ -1,11 +1,13 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}New Message{% endblock %}
+{% block title %}Contact{% endblock %}
 
 {% block body %}
-    <h1>Create new Message</h1>
+    <h1>CONTACT</h1>
 
-    {{ include('message/_form.html.twig') }}
+    <p>Test avant formulaire</p>
 
-    <a href="{{ path('app_message_index') }}">back to list</a>
+    {{ form(form) }}
+
+    <p>Test après formulaire</p>
 {% endblock %}

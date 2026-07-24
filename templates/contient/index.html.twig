@@ -19,7 +19,7 @@
             <tr>
                 <td>{{ contient.id }}</td>
                 <td>{{ contient.quantite }}</td>
-                <td>{{ contient.prixUnitaireCentime }}</td>
+                <td>{{ (produit.centPrice / 100)|number_format(2, ',', ' ') }}</td>
                 <td>
                     <a href="{{ path('app_contient_show', {'id': contient.id}) }}">show</a>
                     <a href="{{ path('app_contient_edit', {'id': contient.id}) }}">edit</a>

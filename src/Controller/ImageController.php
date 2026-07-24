@@ -7,9 +7,12 @@ use App\Form\ImageType;
 use App\Repository\ImageRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\File\Exception\FileException;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\String\Slugger\SluggerInterface;
 
 #[Route('/image')]
 final class ImageController extends AbstractController
@@ -23,13 +26,24 @@ final class ImageController extends AbstractController
     }
 
     #[Route('/new', name: 'app_image_new', methods: ['GET', 'POST'])]
-    public function new(Request $request, EntityManagerInterface $entityManager): Response
+    public function new(Request $request, EntityManagerInterface $entityManager, SluggerInterface $slugger): Response
     {
         $image = new Image();
-        $form = $this->createForm(ImageType::class, $image);
+        $form = $this->createForm(ImageType::class, $image, ['image_required' => true]);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            /** @var UploadedFile $imageFile */
+            $imageFile = $form->get('imageFile')->getData();
+
+            if ($imageFile !== null) {
+                $filename = $this->uploadImage($imageFile, $slugger);
+
+                // On enregistre uniquement le nom du fichieer en base.
+                $image->setUrl($filename);
+                
+            }
+
             $entityManager->persist($image);
             $entityManager->flush();
 
@@ -77,5 +91,24 @@ final class ImageController extends AbstractController
         }
 
         return $this->redirectToRoute('app_image_index', [], Response::HTTP_SEE_OTHER);
+    }
+
+    private function uploadImage(UploadedFile $imageFile, SluggerInterface $slugger): string
+    {
+        $originalFilename = pathinfo($imageFile->getClientOriginalName(), PATHINFO_FILENAME);
+        $safeFilename = $slugger->slug($originalFilename);
+        $newFilename = $safeFilename.'-'.uniqid().'.'.$imageFile->guessExtension();
+
+        try {
+            $imageFile->move(
+                $this->getParameter('images_directory'),
+                $newFilename
+            );
+        } catch (FileException $e) {
+            // Gérer l'erreur de téléchargement du fichier si nécessaire
+            throw new \RuntimeException('Erreur lors du téléchargement de l\'image : '.$e->getMessage());
+        }
+
+        return $newFilename;
     }
 }

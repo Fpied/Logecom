@@ -76,6 +76,9 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
         $this->avis = new ArrayCollection();
         $this->adresses = new ArrayCollection();
         $this->commandes = new ArrayCollection();
+
+        $this->RegistrationDate = new \DateTimeImmutable();
+        $this->role = 'ROLE_USER';
     }
 
     public function getId(): ?int
@@ -118,6 +121,9 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
 
         return $this;
     }
+
+    #[ORM\Column(options: ['default' => false])]
+    private bool $isVerified = false;
 
     public function getPassword(): ?string
     {
@@ -167,9 +173,9 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    public function getRole(): ?string
+    public function getRole(): string
     {
-        return $this->role;
+        return $this->role ?? 'ROLE_USER';
     }
 
     public function setRole(string $role): static
@@ -334,5 +340,17 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
     public function eraseCredentials(): void 
     {
 
+    }
+
+    public function isVerified(): bool
+    {
+        return $this->isVerified;
+    }
+
+    public function setIsVerified(bool $isVerified): static
+    {
+        $this->isVerified = $isVerified;
+
+        return $this;
     }
 }

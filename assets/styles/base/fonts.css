@@ -1,0 +1,31 @@
+@font-face {
+    font-family: 'Star Jedi Logo MonoLine';
+    font-style: normal;
+    font-weight: 400;
+    font-display: block;
+    src: url(data:font/woff;base64,/* tout ton contenu Base64 */);
+}
+
+@font-face {
+    font-family: 'Star Jedi Hollow';
+    font-style: normal;
+    font-weight: 400;
+    font-display: block;
+    src: url("/css/font/star_jedi/starjedi/Starjhol.ttf");
+}
+
+@font-face {
+    font-family: 'futurama';
+    font-style: normal;
+    font-weight: 800;
+    font-display: block;
+    src: url("/css/font/futurama/fr-title.ttf");
+}
+
+@font-face {
+    font-family: 'futuramabold';
+    font-style: normal;
+    font-weight: 400;
+    font-display: block;
+    src: url("/css/font/futurama/fr-bold.ttf");
+}
