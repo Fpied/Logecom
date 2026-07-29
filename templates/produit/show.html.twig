@@ -54,6 +54,31 @@
         </tbody>
     </table>
 
+    {% if app.user %}
+        {% if produit.actif and produit.stock > 0 %}
+            <form
+                action="{{ path('app_panier_ajouter', {'id': produit.id}) }}"
+                method="post"
+            >
+                <input
+                    type="hidden"
+                    name="_token"
+                    value="{{ csrf_token('ajouter-panier-' ~ produit.id) }}"
+                >
+
+                <button type="submit" class="btn">
+                    Ajouter au panier
+                </button>
+            </form>
+        {% else %}
+            <p>Produit indisponible.</p>
+        {% endif %}
+    {% else %}
+        <a href="{{ path('app_login') }}" class="btn">
+            Connectez-vous pour ajouter ce produit au panier
+        </a>
+    {% endif %}
+
     <a href="{{ path('app_produit_index') }}">back to list</a>
 
     <a href="{{ path('app_produit_edit', {'id': produit.id}) }}">edit</a>

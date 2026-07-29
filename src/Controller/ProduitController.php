@@ -4,7 +4,9 @@ namespace App\Controller;
 
 use App\Entity\Produit;
 use App\Entity\Image;
+use App\Entity\Categorie;
 use App\Form\ProduitType;
+use App\Repository\CategorieRepository;
 use App\Repository\ProduitRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\File\Exception\FileException;
@@ -30,13 +32,31 @@ final class ProduitController extends AbstractController
 
     #[Route('/new', name: 'app_produit_new', methods: ['GET', 'POST'])]
     #[IsGranted('ROLE_USER')]
-    public function new(Request $request, EntityManagerInterface $entityManager, SluggerInterface $slugger): Response
+    public function new(Request $request, EntityManagerInterface $entityManager, SluggerInterface $slugger, CategorieRepository $categorieRepository): Response
     {
         $produit = new Produit();
         $form = $this->createForm(ProduitType::class, $produit);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $nomNouvelleCategorie = trim(
+                (string) $form->get('nouvelleCategorie')->getData()
+            );
+
+            if ($nomNouvelleCategorie !== ''){
+                $categorie = $categorieRepository->findOneBy([
+                    'nom' => $nomNouvelleCategorie,
+                ]);
+
+                if ($categorie === null) {
+                    $categorie = new Categorie();
+                    $categorie->setNom($nomNouvelleCategorie);
+
+                    $entityManager->persist($categorie);
+                }
+
+                $produit->setCategorie($categorie);
+            }
             $produit->setUtilisateur($this->getUser());
             $produit->setActif(true);
 

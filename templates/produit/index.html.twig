@@ -12,13 +12,8 @@
                 <thead>
                     <tr>
                         <th>Image</th>
-                        <th>Id</th>
                         <th>Titre</th>
-                        <th>Description</th>
                         <th>prix</th>
-                        <th>Stock</th>
-                        <th>Etat</th>
-                        <th>Actif</th>
                         <th>actions</th>
                     </tr>
                 </thead>
@@ -39,13 +34,8 @@
                                 {% endif %}
                         </td>
 
-                        <td>{{ produit.id }}</td>
                         <td>{{ produit.title }}</td>
-                        <td>{{ produit.description }}</td>
                         <td>{{ (produit.centPrice / 100)|number_format(2, ',', ' ') }} €</td>
-                        <td>{{ produit.stock }}</td>
-                        <td>{{ produit.state }}</td>
-                        <td>{{ produit.actif ? 'Yes' : 'No' }}</td>
                         <td class="actions-cell">
                             <a href="{{ path('app_produit_show', {'id': produit.id}) }}">Voir</a>
                             <a href="{{ path('app_produit_edit', {'id': produit.id}) }}">Modifier</a>
@@ -60,6 +50,9 @@
             </table>
         </div>
         <a href="{{ path('app_produit_new') }}" class="add-product-link">Ajouter un produit</a>
+        <a href="{{ path('app_client') }}" class="btn btn-secondary">
+            Retour au tableau de bord
+        </a>
         </div>
     </main>
 {% endblock %}

@@ -10,6 +10,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\HttpFoundation\JsonResponse;
 
 #[Route('/categorie')]
 final class CategorieController extends AbstractController
@@ -39,6 +40,38 @@ final class CategorieController extends AbstractController
         return $this->render('categorie/new.html.twig', [
             'categorie' => $categorie,
             'form' => $form,
+        ]);
+    }
+
+    #[Route('/new-ajax', name: 'app_categorie_new_ajax', methods: ['POST'])]
+    public function newAjax(
+        Request $request,
+        CategorieRepository $categorieRepository,
+        EntityManagerInterface $entityManager
+    ): JsonResponse {
+        $nom = trim($request->request->getString('nom'));
+
+        if ($nom === ''){
+            return $this->json([
+                'error' => 'Le nom de la catégorie est obligatoire.',
+            ], Response::HTTP_BAD_REQUEST);
+        }
+
+        $categorie = $categorieRepository->findOneBy([
+            'nom' => $nom,
+        ]);
+
+        if (!$categorie){
+            $categorie = new Categorie();
+            $categorie->setNom($nom);
+
+            $entityManager->persist($categorie);
+            $entityManager->flush();
+        }
+
+        return $this->json([
+            'id' => $categorie->getId(),
+            'nom' => $categorie->getNom(),
         ]);
     }
 
@@ -78,4 +111,6 @@ final class CategorieController extends AbstractController
 
         return $this->redirectToRoute('app_categorie_index', [], Response::HTTP_SEE_OTHER);
     }
+
+    
 }

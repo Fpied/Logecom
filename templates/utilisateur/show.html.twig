@@ -16,7 +16,7 @@
                 <td>{{ utilisateur.nom }}</td>
             </tr>
             <tr>
-                <th>Firstname</th>
+                <th>Prénom</th>
                 <td>{{ utilisateur.firstname }}</td>
             </tr>
             <tr>
@@ -24,24 +24,16 @@
                 <td>{{ utilisateur.email }}</td>
             </tr>
             <tr>
-                <th>Password</th>
+                <th>Mot de passe</th>
                 <td>{{ utilisateur.password }}</td>
-            </tr>
-            <tr>
-                <th>RegistrationDate</th>
-                <td>{{ utilisateur.RegistrationDate ? utilisateur.RegistrationDate|date('Y-m-d H:i:s') : '' }}</td>
             </tr>
             <tr>
                 <th>Pseudo</th>
                 <td>{{ utilisateur.pseudo }}</td>
             </tr>
             <tr>
-                <th>Photo_profil</th>
+                <th>Photo de profil</th>
                 <td>{{ utilisateur.photoProfil }}</td>
-            </tr>
-            <tr>
-                <th>Role</th>
-                <td>{{ utilisateur.role }}</td>
             </tr>
         </tbody>
     </table>

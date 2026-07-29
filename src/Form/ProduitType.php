@@ -9,6 +9,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Validator\Constraints\All;
 use Symfony\Component\Validator\Constraints\File;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use App\Entity\Categorie;
 use Symfony\Component\Form\Extension\Core\Type\NumberType;
@@ -66,12 +67,17 @@ class ProduitType extends AbstractType
                 'class' => Categorie::class,
                 'choice_label' => 'nom',
                 'autocomplete' => true,
-                'attr' => [
-                    'data-controller' => 'categorie',
-                    'data-categorie-url-value' => '/categorie/new-ajax',
-                ]
+                
             ])
-        ;
+
+            ->add('nouvelleCategorie', TextType::class, [
+                'mapped' => false,
+                'required' => false,
+                'label' => 'Nouvelle catégorie',
+                'attr' => [
+                    'placeholder' => 'Exemple : Chaussures',
+                ],
+            ]);
 
         $builder->get('centPrice')->addModelTransformer(
             new CallbackTransformer(

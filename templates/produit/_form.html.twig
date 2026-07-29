@@ -1,15 +1,18 @@
+<div class="form-container">
 {{ form_start(form, {
     attr: {
         class: 'produit-form'
     }
 }) }}
 
+    
     {{ form_row(form.title) }}
     {{ form_row(form.description) }}
     {{ form_row(form.centPrice) }}
     {{ form_row(form.stock) }}
     {{ form_row(form.state) }}
     {{ form_row(form.categorie) }}
+    {{ form_row(form.nouvelleCategorie) }}
 
     {% if produit is defined and produit.images|length > 0 %}
         <div class="produit-images">
@@ -32,3 +35,4 @@
     </button>
 
 {{ form_end(form) }}
+</div>

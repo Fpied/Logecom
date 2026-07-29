@@ -7,9 +7,48 @@
 
     <main class="home-content">
     <aside class="cart">
-            <h2>PANIER</h2>
+    <h2>PANIER</h2>
+
+        {% if lignesPanier is empty %}
             <p>Votre panier est vide.</p>
-        </aside>
+        {% else %}
+            {% set totalPanier = 0 %}
+
+            {# On parcourt toutes les lignes uniquement pour calculer le total complet #}
+            {% for ligne in lignesPanier %}
+                {% set totalPanier =
+                    totalPanier
+                    + (ligne.produit.centPrice * ligne.quantite)
+                %}
+            {% endfor %}
+
+            {# On affiche seulement deux lignes du panier #}
+            {% for ligne in lignesPanier|slice(0, 2) %}
+                <div class="cart-item">
+                    <p>{{ ligne.produit.title }}</p>
+
+                    <p>
+                        {{ (
+                            (ligne.produit.centPrice * ligne.quantite) / 100
+                        )|number_format(2, ',', ' ') }} €
+                    </p>
+                </div>
+            {% endfor %}
+
+            {% if lignesPanier|length > 2 %}
+                <p class="cart-more">
+                    + {{ lignesPanier|length - 2 }} autre(s) produit(s)
+                </p>
+            {% endif %}
+
+            <hr>
+
+            <p class="cart-total">
+                <strong>Total :</strong>
+                {{ (totalPanier / 100)|number_format(2, ',', ' ') }} €
+            </p>
+        {% endif %}
+    </aside>
 
         <section class="featured-product">
             <h2>PRODUIT MIS EN AVANT</h2>
@@ -68,12 +107,32 @@
                                     </a>
 
                                     {% if produit.stock > 0 %}
-                                        <a
-                                            class="cart-button"
-                                            href="#"
-                                        >
-                                        Ajouter au panier
-                                        </a>
+                                        {% if app.user %}
+                                            <form
+                                                action="{{ path('app_panier_ajouter', {'id': produit.id}) }}"
+                                                method="post"
+                                            >
+                                                <input
+                                                    type="hidden"
+                                                    name="_token"
+                                                    value="{{ csrf_token('ajouter-panier-' ~ produit.id) }}"
+                                                >
+
+                                                <button
+                                                    type="submit"
+                                                    class="cart-button"
+                                                >
+                                                    Ajouter au panier
+                                                </button>
+                                            </form>
+                                        {% else %}
+                                            <a
+                                                class="cart-button"
+                                                href="{{ path('app_login') }}"
+                                            >
+                                                Connectez-vous pour acheter
+                                            </a>
+                                        {% endif %}
                                     {% endif %}
                                 </div>
                             </div>

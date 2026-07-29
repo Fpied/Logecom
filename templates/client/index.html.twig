@@ -16,19 +16,19 @@
 
     <div class="dashboard-actions">
 
-        <a href="#" class="dashboard-button">
+        <a href="{{ path('app_commande_index')}}" class="dashboard-button">
             Mes commandes
         </a>
 
-        <a href="#" class="dashboard-button">
+        <a href="{{ path('app_produit_index')}}" class="dashboard-button">
             Mes produits en vente
         </a>
 
-        <a href="#" class="dashboard-button">
+        <a href="{{ path('app_produit_new')}}" class="dashboard-button">
             Mettre un produit en vente
         </a>
 
-        <a href="#" class="dashboard-button">
+        <a href="{{ path('app_utilisateur_edit', { id: utilisateur.id })}}" class="dashboard-button">
             Modifier Profil
         </a>
     </div>
