@@ -8,18 +8,38 @@ use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Form\Extension\Core\Type\EmailType;
+use Symfony\Component\Form\Extension\Core\Type\TelType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 
 class MessageType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
+            ->add('nom', TextType::class, [
+                'label' => 'Nom',
+            ])
+            ->add('prenom', TextType::class, [
+                'label' => 'Prénom',
+            ])
+            ->add('email', EmailType::class, [
+                'label' => 'Adresse e-mail',
+            ])
+            ->add('telephone', TelType::class, [
+                'label' => 'Téléphone',
+                'required' => false,
+            ])
+            ->add('adressePostale', TextType::class, [
+                'label' => 'Adresse postale',
+                'required' => false,
+            ])
             ->add('contenu', TextareaType::class, [
                 'label' => 'Votre message',
                 'attr' => [
                     'rows' => 8,
-                    'placeholder' => 'Ecrivez votre message ici ...'
-                ]
+                    'placeholder' => 'Écrivez votre message ici ...',
+                ],
             ])
             ->add('envoyer', SubmitType::class, [
                 'label' => 'Envoyer',

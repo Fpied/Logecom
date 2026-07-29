@@ -1,0 +1,32 @@
+form{
+    margin: 10px;
+}
+.form-container form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.form-container form > div {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.form-container label {
+    font-weight: bold;
+    color: var(--bg-dark);
+}
+
+.form-container input,
+.form-container textarea,
+.form-container select {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #777;
+    border-radius: 5px;
+}
+
+.form-submit {
+    width: 100%;
+}

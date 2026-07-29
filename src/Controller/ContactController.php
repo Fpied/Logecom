@@ -8,6 +8,8 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Mailer\MailerInterface;
+use Symfony\Component\Mime\Email;
 use Symfony\Component\Routing\Attribute\Route;
 
 final class ContactController extends AbstractController
@@ -15,7 +17,8 @@ final class ContactController extends AbstractController
     #[Route('/contact', name: 'contact', methods: ['GET', 'POST'])]
     public function index(
         Request $request,
-        EntityManagerInterface $entityManager
+        EntityManagerInterface $entityManager,
+        MailerInterface $mailer
     ): Response {
         $message = new Message();
 
@@ -25,6 +28,21 @@ final class ContactController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager->persist($message);
             $entityManager->flush();
+
+            $email = (new Email())
+                ->from('contact@logecom.local')
+                ->to('admin@logecom.local')
+                ->replyTo($message->getEmail())
+                ->subject('Nouveau message reçu sur Logecom')
+                ->text(
+                    "Nom : {$message->getNom()}\n" .
+                    "Prénom : {$message->getPrenom()}\n" .
+                    "Email : {$message->getEmail()}\n" .
+                    "Adresse postale : {$message->getAdressePostale()}\n\n" .
+                    "Message :\n{$message->getContenu()}"
+                );
+
+            $mailer->send($email);
 
             $this->addFlash(
                 'success',

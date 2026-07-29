@@ -14,6 +14,11 @@
         {% endfor %}
 
         {{ form_start(form) }}
+            {{ form_row(form.nom) }}
+            {{ form_row(form.prenom) }}
+            {{ form_row(form.email) }}
+            {{ form_row(form.telephone) }}
+            {{ form_row(form.adressePostale) }}
             {{ form_row(form.contenu) }}
             {{ form_row(form.envoyer) }}
         {{ form_end(form) }}

@@ -1,0 +1,54 @@
+.seller-dashboard {
+    padding: 20px 16px 70px;
+    text-align: center;
+}
+
+.seller-dashboard h2 {
+    margin-bottom: 6px;
+    font-size: 20px;
+    font-weight: normal;
+}
+
+.dashboard-totals {
+    margin-bottom: 20px;
+}
+
+.dashboard-totals p {
+    margin: 6px 0;
+}
+
+.achat {
+    color: #24d83a;
+}
+
+.vente {
+    color: red;
+}
+
+.dashboard-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.dashboard-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    min-height: 68px;
+    padding: 10px;
+
+    color: black;
+    background-color: #b8b9bd;
+
+    border: 1px solid black;
+    border-radius: 6px;
+
+    text-decoration: none;
+    font-size: 17px;
+}
+
+.dashboard-button:hover {
+    background-color: #a6a7aa;
+}
