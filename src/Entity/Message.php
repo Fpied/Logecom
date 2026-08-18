@@ -32,7 +32,7 @@ class Message
     #[ORM\Column(length: 180)]
     private ?string $email = null;
 
-    #[ORMColumn(length: 30, nullable: true)]
+    #[ORM\Column(length: 30, nullable: true)]
     private ?string $telephone = null;
 
     #[ORM\Column(length: 255, nullable: true)]

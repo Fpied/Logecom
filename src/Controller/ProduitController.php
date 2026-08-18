@@ -101,6 +101,10 @@ final class ProduitController extends AbstractController
     #[Route('/{id}/edit', name: 'app_produit_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, Produit $produit, EntityManagerInterface $entityManager, SluggerInterface $slugger): Response
     {
+        if ($produit->getUtilisateur() !== $this->getUser()) {
+            throw $this->createAccessDeniedException('Accès interdit.');
+        }
+
         $form = $this->createForm(ProduitType::class, $produit);
         $form->handleRequest($request);
 
@@ -138,6 +142,11 @@ final class ProduitController extends AbstractController
     #[Route('/{id}', name: 'app_produit_delete', methods: ['POST'])]
     public function delete(Request $request, Produit $produit, EntityManagerInterface $entityManager): Response
     {
+
+        if ($produit->getUtilisateur() !== $this->getUser()) {
+            throw $this->createAccessDeniedException('Accès interdit.');
+        }
+        
         if ($this->isCsrfTokenValid('delete'.$produit->getId(), $request->getPayload()->getString('_token'))) {
             $entityManager->remove($produit);
             $entityManager->flush();

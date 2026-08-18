@@ -37,31 +37,8 @@ final class CommandeController extends AbstractController
             ]);       
     }
 
-    #[Route('/new', name: 'app_commande_new', methods: ['GET', 'POST'])]
-    public function new(Request $request, EntityManagerInterface $entityManager): Response
-    {
-        $commande = new Commande();
-        $form = $this->createForm(CommandeType::class, $commande);
-        $form->handleRequest($request);
 
-        if ($form->isSubmitted() && $form->isValid()) {
-            $entityManager->persist($commande);
-            $entityManager->flush();
-
-            return $this->redirectToRoute('app_commande_index', [], Response::HTTP_SEE_OTHER);
-        }
-
-        return $this->render('commande/new.html.twig', [
-            'commande' => $commande,
-            'form' => $form,
-        ]);
-    }
-
-    #[Route(
-    '/validation',
-    name: 'app_commande_validation',
-    methods: ['GET']
-    )]
+    #[Route('/validation', name: 'app_commande_validation', methods: ['GET'])]
     public function validation(Request $request, AjouterRepository $ajouterRepository,
             ProduitRepository $produitRepository): Response {
             $utilisateur = $this->getUser();
@@ -325,6 +302,9 @@ final class CommandeController extends AbstractController
     #[Route('/{id}', name: 'app_commande_show', methods: ['GET'])]
     public function show(Commande $commande): Response
     {
+        if ($commande->getUtilisateur() !== $this->getUser()) {
+            throw $this->createAccessDeniedException('Accès interdit.');
+        }
         return $this->render('commande/show.html.twig', [
             'commande' => $commande,
         ]);
@@ -333,6 +313,11 @@ final class CommandeController extends AbstractController
     #[Route('/{id}/edit', name: 'app_commande_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, Commande $commande, EntityManagerInterface $entityManager): Response
     {
+
+        if ($commande->getUtilisateur() !== $this->getUser()) {
+            throw $this->createAccessDeniedException('Accès interdit.');
+        }
+
         $form = $this->createForm(CommandeType::class, $commande);
         $form->handleRequest($request);
 
@@ -351,6 +336,10 @@ final class CommandeController extends AbstractController
     #[Route('/{id}', name: 'app_commande_delete', methods: ['POST'])]
     public function delete(Request $request, Commande $commande, EntityManagerInterface $entityManager): Response
     {
+        if ($commande->getUtilisateur() !== $this->getUser()) {
+            throw $this->createAccessDeniedException('Accès interdit.');
+        }
+
         if ($this->isCsrfTokenValid('delete'.$commande->getId(), $request->getPayload()->getString('_token'))) {
             $entityManager->remove($commande);
             $entityManager->flush();
