@@ -47,6 +47,12 @@
                 <strong>Total :</strong>
                 {{ (totalPanier / 100)|number_format(2, ',', ' ') }} €
             </p>
+            <a 
+                href="{{ path('app_panier') }}"
+                class="view-button"
+            >
+            Voir mon panier
+            </a>
         {% endif %}
     </aside>
 
@@ -107,32 +113,23 @@
                                     </a>
 
                                     {% if produit.stock > 0 %}
-                                        {% if app.user %}
-                                            <form
-                                                action="{{ path('app_panier_ajouter', {'id': produit.id}) }}"
-                                                method="post"
+                                        <form
+                                            action="{{ path('app_panier_ajouter', {'id': produit.id}) }}"
+                                            method="post"
+                                        >
+                                            <input
+                                                type="hidden"
+                                                name="_token"
+                                                value="{{ csrf_token('ajouter-panier-' ~ produit.id) }}"
                                             >
-                                                <input
-                                                    type="hidden"
-                                                    name="_token"
-                                                    value="{{ csrf_token('ajouter-panier-' ~ produit.id) }}"
-                                                >
 
-                                                <button
-                                                    type="submit"
-                                                    class="cart-button"
-                                                >
-                                                    Ajouter au panier
-                                                </button>
-                                            </form>
-                                        {% else %}
-                                            <a
+                                            <button
+                                                type="submit"
                                                 class="cart-button"
-                                                href="{{ path('app_login') }}"
                                             >
-                                                Connectez-vous pour acheter
-                                            </a>
-                                        {% endif %}
+                                                Ajouter au panier
+                                            </button>
+                                        </form>
                                     {% endif %}
                                 </div>
                             </div>

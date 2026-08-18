@@ -1,0 +1,53 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Validation de la commande{% endblock %}
+
+{% block body %}
+<div class="page">
+    <main class="cart-page">
+
+        <h1>Validation de la commande</h1>
+
+        <div class="cart-lines">
+            {% for ligne in lignesPanier %}
+                {% set produit = ligne.produit %}
+                {% set sousTotal = produit.centPrice * ligne.quantite %}
+
+                <article class="cart-line">
+                    <div class="cart-line-information">
+                        <h2>{{ produit.title }}</h2>
+
+                        <p>
+                            Quantité : {{ ligne.quantite }}
+                        </p>
+
+                        <p>
+                            Sous-total :
+                            {{ (sousTotal / 100)|number_format(2, ',', ' ') }} €
+                        </p>
+                    </div>
+                </article>
+            {% endfor %}
+        </div>
+
+        <h2>
+            Total :
+            {{ (totalPanier / 100)|number_format(2, ',', ' ') }} €
+        </h2>
+
+        <div class="cart-actions">
+            <a href="{{ path('app_panier') }}" class="view-button">
+                Retour au panier
+            </a>
+
+            <a
+                href="{{ path('app_commande_adresse') }}"
+                class="cart-button"
+            >
+                Continuer vers l’adresse
+            </a>
+        </div>
+
+    </main>
+</div>
+{% endblock %}

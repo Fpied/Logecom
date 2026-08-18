@@ -11,6 +11,7 @@
 
 .featured-product {
     width: 100%;
+    padding-bottom: 500px;
 }
 
 .featured-product h2 {
@@ -21,12 +22,17 @@
 }
 
 .cart {
-    width: 100%;
-    margin-top: 24px;
+    width: calc(100% - 40px);
     padding: 20px;
     border: 1px solid #dddddd;
     border-radius: 12px;
     background: #ffffff;
+    position: fixed;
+
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 1000;
 }
 
 .cart h2 {

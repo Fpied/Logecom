@@ -9,11 +9,12 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use App\Repository\ProduitRepository;
+use Symfony\Component\HttpFoundation\Request;
 
 final class MainController extends AbstractController
 {
     #[Route('/', name: 'home', methods: ['GET'])]
-    public function index(ProduitRepository $produitRepository): Response
+    public function index(Request $request, ProduitRepository $produitRepository): Response
     {
         $produits = $produitRepository->findBy(
             ['actif' => true],
@@ -30,6 +31,20 @@ final class MainController extends AbstractController
 
             if ($panier !== null) {
                 $lignesPanier = $panier->getAjouters();
+            }
+        } else{
+            $panierSession = $request->getSession()->get('panier', []);
+            foreach($panierSession as $produitId => $quantite){
+                $produit = $produitRepository->find($produitId);
+                
+                if ($produit === null){
+                    continue;
+                }
+
+                $lignesPanier[] = [
+                    'produit' => $produit,
+                    'quantite' => $quantite,
+                ];
             }
         }
 

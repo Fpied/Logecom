@@ -3,8 +3,6 @@
 namespace App\Form;
 
 use App\Entity\Adresse;
-use App\Entity\Utilisateur;
-use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -14,15 +12,16 @@ class AdresseType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
+            ->add('firstname')
+            ->add('lastname')
             ->add('street')
-            ->add('land')
+            ->add('land', null, [
+                'required' => false,
+            ])
             ->add('Cp')
             ->add('city')
             ->add('country')
-            ->add('utilisateur', EntityType::class, [
-                'class' => Utilisateur::class,
-                'choice_label' => 'id',
-            ])
+            
         ;
     }
 

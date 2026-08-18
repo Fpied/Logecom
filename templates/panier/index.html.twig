@@ -1,20 +1,116 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Hello PanierController!{% endblock %}
+{% block title %}Mon panier{% endblock %}
 
 {% block body %}
-<style>
-    .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
-    .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
-</style>
+<div class="page">
+    <main class="cart-page">
+        <h1>Mon panier</h1>
 
-<div class="example-wrapper">
-    <h1>Hello {{ controller_name }}! ✅</h1>
+        {% for type, messages in app.flashes %}
+            {% for message in messages %}
+                <div class="flash-message flash-{{ type }}">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endfor %}
 
-    This friendly message is coming from:
-    <ul>
-        <li>Your controller at <code>/home/francois/Projets/Logecom/src/Controller/PanierController.php</code></li>
-        <li>Your template at <code>/home/francois/Projets/Logecom/templates/panier/index.html.twig</code></li>
-    </ul>
+        {% if lignesPanier is empty %}
+            <div class="empty-cart">
+                <p>Votre panier est vide.</p>
+
+                <a href="{{ path('home') }}" class="view-button">
+                    Continuer mes achats
+                </a>
+            </div>
+        {% else %}
+            <div class="cart-lines">
+                {% for ligne in lignesPanier %}
+                    {% set produit = ligne.produit %}
+                    {% set sousTotal =
+                        produit.centPrice * ligne.quantite
+                    %}
+
+                    <article class="cart-line">
+                        <div class="cart-line-image">
+                            {% set imagePrincipale = null %}
+
+                            {% for image in produit.images %}
+                                {% if image.mainImage %}
+                                    {% set imagePrincipale = image %}
+                                {% endif %}
+                            {% endfor %}
+
+                            {% if imagePrincipale %}
+                                <img
+                                    src="{{ asset(
+                                        'uploads/images/' ~ imagePrincipale.url
+                                    ) }}"
+                                    alt="{{ produit.title }}"
+                                >
+                            {% else %}
+                                <div class="product-image-placeholder">
+                                    Aucune image
+                                </div>
+                            {% endif %}
+                        </div>
+
+                        <div class="cart-line-information">
+                            <h2>{{ produit.title }}</h2>
+
+                            <p>
+                                Prix unitaire :
+                                {{ (produit.centPrice / 100)
+                                    |number_format(2, ',', ' ') }} €
+                            </p>
+
+                            <p>
+                                Quantité : {{ ligne.quantite }}
+                            </p>
+
+                            <p>
+                                Sous-total :
+                                <strong>
+                                    {{ (sousTotal / 100)
+                                        |number_format(2, ',', ' ') }} €
+                                </strong>
+                            </p>
+
+                            <a
+                                href="{{ path(
+                                    'app_produit_show',
+                                    { id: produit.id }
+                                ) }}"
+                                class="view-button"
+                            >
+                                Voir le produit
+                            </a>
+                        </div>
+                    </article>
+                {% endfor %}
+            </div>
+
+            <div class="cart-summary">
+                <p>
+                    <strong>Total du panier :</strong>
+
+                    <span>
+                        {{ (totalPanier / 100)
+                            |number_format(2, ',', ' ') }} €
+                    </span>
+                </p>
+
+                <div class="cart-summary-actions">
+                    <a href="{{ path('home') }}" class="view-button">
+                        Continuer mes achats
+                    </a>
+
+                    <a href="{{ path('app_commande_validation') }}">
+                        Passer la commande
+                    </a>
+                </div>
+            </div>
+        {% endif %}
+    </main>
 </div>
 {% endblock %}

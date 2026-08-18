@@ -1,11 +1,58 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}New Paiement{% endblock %}
+{% block title %}Choix du paiement{% endblock %}
 
 {% block body %}
-    <h1>Create new Paiement</h1>
+<div class="page">
+    <main class="cart-page">
 
-    {{ include('paiement/_form.html.twig') }}
+        <h1>Choisissez votre moyen de paiement</h1>
 
-    <a href="{{ path('app_paiement_index') }}">back to list</a>
+        <p>
+            Sélectionnez le moyen de paiement que vous souhaitez utiliser.
+        </p>
+
+        <form
+        method="post"
+        action="{{ path('app_commande_paiement') }}"
+        class="payment-form"
+        data-turbo="false"
+        >
+            <label class="payment-option">
+                <input
+                    type="radio"
+                    name="payment_method"
+                    value="stripe"
+                    checked
+                    required
+                >
+
+                <span>Carte bancaire</span>
+            </label>
+
+            <input
+                type="hidden"
+                name="_token"
+                value="{{ csrf_token('choose_payment_method') }}"
+            >
+
+            <button
+                type="submit"
+                class="cart-button payment-submit"
+            >
+                Payer par carte
+            </button>
+        </form>
+
+        <div class="cart-actions">
+            <a
+                href="{{ path('app_commande_adresse') }}"
+                class="view-button"
+            >
+                Retour à l’adresse
+            </a>
+        </div>
+
+    </main>
+</div>
 {% endblock %}

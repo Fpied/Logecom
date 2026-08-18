@@ -1,4 +1,82 @@
-{{ form_start(form) }}
-    {{ form_widget(form) }}
-    <button class="btn">{{ button_label|default('Save') }}</button>
-{{ form_end(form) }}
+{{ form_start(form, {
+    attr: {
+        class: 'address-form'
+    }
+}) }}
+
+    <div class="address-field">
+        {{ form_label(form.firstname, 'Prénom') }}
+        {{ form_widget(form.firstname, {
+            attr: {
+                placeholder: 'Dominique'
+            }
+        }) }}
+        {{ form_errors(form.firstname) }}
+    </div>
+
+    <div class="address-field">
+        {{ form_label(form.lastname, 'Nom') }}
+        {{ form_widget(form.lastname, {
+            attr: {
+                placeholder: 'Martin'
+            }
+        }) }}
+        {{ form_errors(form.lastname) }}
+    </div>
+
+    <div class="address-field">
+        {{ form_label(form.street, 'Adresse') }}
+        {{ form_widget(form.street, {
+            attr: {
+                placeholder: '12 rue des Lilas'
+            }
+        }) }}
+        {{ form_errors(form.street) }}
+    </div>
+
+    <div class="address-field">
+        {{ form_label(form.land, 'Complément d’adresse') }}
+        {{ form_widget(form.land, {
+            attr: {
+                placeholder: 'Appartement, étage...'
+            }
+        }) }}
+        {{ form_errors(form.land) }}
+    </div>
+
+    <div class="address-field">
+        {{ form_label(form.Cp, 'Code postal') }}
+        {{ form_widget(form.Cp, {
+            attr: {
+                placeholder: '75001'
+            }
+        }) }}
+        {{ form_errors(form.Cp) }}
+    </div>
+
+    <div class="address-field">
+        {{ form_label(form.city, 'Ville') }}
+        {{ form_widget(form.city, {
+            attr: {
+                placeholder: 'Paris'
+            }
+        }) }}
+        {{ form_errors(form.city) }}
+    </div>
+
+    <div class="address-field">
+        {{ form_label(form.country, 'Pays') }}
+        {{ form_widget(form.country, {
+            attr: {
+                placeholder: 'France'
+            }
+        }) }}
+        {{ form_errors(form.country) }}
+    </div>
+
+    <button type="submit" class="cart-button address-submit">
+        {{ button_label|default('Continuer vers le paiement') }}
+    </button>
+
+{{ form_rest(form) }}
+{{ form_end(form, { render_rest: false }) }}
