@@ -85,6 +85,21 @@
                             >
                                 Voir le produit
                             </a>
+                            <form
+                                method="post"
+                                action="{{ path('app_panier_supprimer', {
+                                    id: produit.id
+                                }) }}"
+                            >
+                            <input
+                                    type="hidden"
+                                    name="_token"
+                                    value="{{ csrf_token('supprimer-panier-' ~ produit.id) }}"
+                                />
+                                <button type="submit" class="view-button">
+                                    Supprimer
+                                </button>
+                            </form>
                         </div>
                     </article>
                 {% endfor %}

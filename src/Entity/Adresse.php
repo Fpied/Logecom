@@ -59,7 +59,7 @@ class Adresse
         return $this->land;
     }
 
-    public function setLand(string $land): static
+    public function setLand(?string $land): static
     {
         $this->land = $land;
 

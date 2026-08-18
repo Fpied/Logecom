@@ -1,0 +1,66 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Administration - Commandes{% endblock %}
+
+{% block body %}
+<div class="page">
+    <main class="dashboard-page">
+
+        <h1>Gestion des commandes</h1>
+
+        {% if commandes is empty %}
+            <p>Aucune commande.</p>
+        {% else %}
+            <div class="admin-orders">
+
+                {% for commande in commandes %}
+                    <article class="admin-order">
+
+                        <h2>
+                            Commande n°{{ commande.id }}
+                        </h2>
+
+                        <p>
+                            <strong>Date :</strong>
+                            {{ commande.dateCommande|date('d/m/Y H:i') }}
+                        </p>
+
+                        <p>
+                            <strong>Montant :</strong>
+                            {{ (commande.montantTotalCentimes / 100)
+                                |number_format(2, ',', ' ') }} €
+                        </p>
+
+                        <p>
+                            <strong>Statut :</strong>
+                            {{ commande.status }}
+                        </p>
+
+                        <p>
+                            <strong>Client :</strong>
+
+                            {% if commande.utilisateur %}
+                                {{ commande.utilisateur.firstname }}
+                                {{ commande.utilisateur.nom }}
+
+                                <br>
+
+                                {{ commande.utilisateur.email }}
+                            {% else %}
+                                Client non associé
+                            {% endif %}
+                        </p>
+
+                    </article>
+                {% endfor %}
+
+            </div>
+        {% endif %}
+
+        <a href="{{ path('app_admin') }}" class="view-button">
+            Retour au tableau de bord
+        </a>
+
+    </main>
+</div>
+{% endblock %}

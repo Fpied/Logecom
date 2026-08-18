@@ -210,6 +210,59 @@ public function index(
         return $this->redirigerApresAjout($request, $produit);
     }
 
+    #[Route('/panier/supprimer/{id}', name: 'app_panier_supprimer', methods: ['POST'])]
+    public function supprimer( Produit $produit, Request $request, AjouterRepository $ajouterRepository, EntityManagerInterface $entityManager): Response {
+        if (!$this->isCsrfTokenValid(
+            'supprimer-panier-' . $produit->getId(),
+            $request->getPayload()->getString('_token')
+        )) {
+            throw $this->createAccessDeniedException(
+                'Jeton de sécurité invalide.'
+            );
+        }
+
+        $utilisateur = $this->getUser();
+
+        if (!$utilisateur instanceof Utilisateur) {
+            $session = $request->getSession();
+            $panierSession = $session->get('panier', []);
+
+            unset($panierSession[$produit->getId()]);
+
+            $session->set('panier', $panierSession);
+
+            $this->addFlash(
+                'success',
+                'Le produit a été supprimé du panier.'
+            );
+
+            return $this->redirectToRoute('app_panier');
+        }
+
+        $panier = $utilisateur->getPanier();
+
+        if ($panier === null) {
+            return $this->redirectToRoute('app_panier');
+        }
+
+        $lignePanier = $ajouterRepository->findOneBy([
+            'panier' => $panier,
+            'produit' => $produit,
+        ]);
+
+        if ($lignePanier !== null) {
+            $entityManager->remove($lignePanier);
+            $entityManager->flush();
+
+            $this->addFlash(
+                'success',
+                'Le produit a été supprimé du panier.'
+            );
+        }
+
+        return $this->redirectToRoute('app_panier');
+    }
+
     private function redirigerApresAjout(
         Request $request,
         Produit $produit

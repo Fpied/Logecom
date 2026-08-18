@@ -1,0 +1,29 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Administration{% endblock %}
+
+{% block body %}
+<div class="page">
+    <main class="dashboard-page">
+
+        <h1>Tableau de bord administrateur</h1>
+
+        <div class="dashboard-actions">
+
+            <a href="{{ path('app_produit_index') }}" class="view-button">
+                Gérer les produits
+            </a>
+
+            <a href="{{ path('app_admin_commandes') }}" class="view-button">
+                Gérer les commandes
+            </a>
+
+            <a href="#" class="view-button">
+                Gérer les utilisateurs
+            </a>
+
+        </div>
+
+    </main>
+</div>
+{% endblock %}

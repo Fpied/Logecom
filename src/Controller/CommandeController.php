@@ -113,6 +113,19 @@ final class CommandeController extends AbstractController
 
         if ($utilisateur instanceof Utilisateur) {
             $adresse->setUtilisateur($utilisateur);
+
+            $adresse->setFirstname($utilisateur->getFirstname());
+            $adresse->setLastname($utilisateur->getNom());
+
+            $adresseExistante = $utilisateur->getAdresses()->last();
+
+            if ($adresseExistante !== false){
+                $adresse->setStreet($adresseExistante->getStreet());
+                $adresse->setLand($adresseExistante->getLand());
+                $adresse->setCp($adresseExistante->getCp());
+                $adresse->setCity($adresseExistante->getCity());
+                $adresse->setCountry($adresseExistante->getCountry());
+            }
         }
 
         $form = $this->createForm(AdresseType::class, $adresse);

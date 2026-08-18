@@ -31,6 +31,17 @@
         <a href="{{ path('app_utilisateur_edit', { id: utilisateur.id })}}" class="dashboard-button">
             Modifier Profil
         </a>
+
+        {% if is_granted('ROLE_ADMIN') %}
+            <a href="{{ path('app_admin') }}" class="view-button">
+                Administration
+            </a>
+        {% endif %}
+
+
+        <a href="{{ path('app_logout') }}" class="view-button">
+            Déconnexion
+        </a>
     </div>
 
     
