@@ -12,9 +12,17 @@
             Renseignez votre adresse afin de poursuivre votre commande.
         </p>
 
-        {{ include('adresse/_form.html.twig', {
-            button_label: 'Continuer vers le paiement'
-        }) }}
+        <div class="form-container">
+            {{ form_start(form) }}
+
+                {{ form_widget(form) }}
+
+                <button type="submit" class="view-button">
+                    Continuer vers le paiement
+                </button>
+            
+            {{ form_end(form) }}
+        </div>
 
         <div class="cart-actions">
             <a
