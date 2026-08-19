@@ -3,18 +3,19 @@
 namespace App\Controller;
 
 use App\Entity\Commande;
-use App\Form\CommandeType;
 use App\Repository\CommandeRepository;
 use App\Repository\AjouterRepository;
 use App\Repository\ProduitRepository;
 use App\Entity\Adresse;
 use App\Entity\Utilisateur;
 use App\Form\AdresseType;
+use App\Entity\Contient;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Stripe\StripeClient;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
@@ -23,6 +24,7 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 final class CommandeController extends AbstractController
 {
     #[Route(name: 'app_commande_index', methods: ['GET'])]
+    #[IsGranted('ROLE_USER')]
     public function index(CommandeRepository $commandeRepository): Response
     {
         $utilisateur = $this->getUser();
@@ -279,9 +281,8 @@ final class CommandeController extends AbstractController
     name: 'app_commande_paiement_success',
     methods: ['GET']
     )]
-    public function paiementSuccess(
-        Request $request,
-        #[Autowire('%env(STRIPE_SECRET_KEY)%')]
+
+    public function paiementSuccess(Request $request, EntityManagerInterface $entityManager, #[Autowire('%env(STRIPE_SECRET_KEY)%')]
         string $stripeSecretKey
     ): Response {
         $stripeSessionId = $request->query->get('session_id');
@@ -306,6 +307,52 @@ final class CommandeController extends AbstractController
             return $this->redirectToRoute('app_commande_paiement');
         }
 
+            // ICI
+            $utilisateur = $this->getUser();
+
+            if(!$utilisateur instanceof Utilisateur) {
+                return $this->redirectToRoute('connexion');
+            }
+
+            $panier = $utilisateur->getPanier();
+
+            if($panier === null){
+                return $this->redirectToRoute('app_panier');
+
+            }
+
+            $commande = new Commande();
+            $commande->setDateCommande(new \DateTime());
+            $commande->setUtilisateur($utilisateur);
+            $commande->setStatus('payee');
+
+            $total = 0;
+
+            foreach($panier->getAjouters() as $ligne){
+                $total += $ligne->getProduit()->getCentPrice() * $ligne->getQuantite();
+            }
+
+            $commande->setMontantTotalCentimes($total);
+
+            foreach($panier->getAjouters() as $ligne){
+                $contient = new Contient();
+                $contient->setCommande($commande);
+                $contient->setProduit($ligne->getProduit());
+                $contient->setQuantite($ligne->getQuantite());
+                $contient->setPrixUnitaireCentime($ligne->getProduit()->getCentPrice());
+
+                $entityManager->persist($contient);
+            }
+
+            $entityManager->persist($commande);
+            foreach($panier->getAjouters() as $ligne){
+                $entityManager->remove($ligne);
+            }
+            $entityManager->flush();
+
+            
+        
+
         return $this->render('commande/confirmation.html.twig', [
             'stripe_session_id' => $checkoutSession->id,
         ]);
@@ -323,28 +370,6 @@ final class CommandeController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}/edit', name: 'app_commande_edit', methods: ['GET', 'POST'])]
-    public function edit(Request $request, Commande $commande, EntityManagerInterface $entityManager): Response
-    {
-
-        if ($commande->getUtilisateur() !== $this->getUser()) {
-            throw $this->createAccessDeniedException('Accès interdit.');
-        }
-
-        $form = $this->createForm(CommandeType::class, $commande);
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
-            $entityManager->flush();
-
-            return $this->redirectToRoute('app_commande_index', [], Response::HTTP_SEE_OTHER);
-        }
-
-        return $this->render('commande/edit.html.twig', [
-            'commande' => $commande,
-            'form' => $form,
-        ]);
-    }
 
     #[Route('/{id}', name: 'app_commande_delete', methods: ['POST'])]
     public function delete(Request $request, Commande $commande, EntityManagerInterface $entityManager): Response

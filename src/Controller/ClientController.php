@@ -31,7 +31,7 @@ final class ClientController extends AbstractController
         $totalAchatsCentimes = 0;
 
         foreach ($commandes as $commande){
-            $totalAchatCentimes += $commande->getMontantTotalCentimes();
+            $totalAchatsCentimes += $commande->getMontantTotalCentimes();
         }
 
         $lignesCommandes = $contientRepository->findAll();

@@ -1,0 +1,13 @@
+{% extends 'base.html.twig' %}
+{% block title %}Confirmation de commande{% endblock %}
+{% block body %}
+    <main>
+        <h1>Paiement réussi</h1>
+
+        <p>Votre paiement a bien été validé.</p>
+
+        <a href="{{ path('home')}}">
+            Retour à l'accueil
+        </a>
+    </main>
+{% endblock %}

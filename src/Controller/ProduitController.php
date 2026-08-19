@@ -23,10 +23,15 @@ use Symfony\Component\Routing\Attribute\Route;
 final class ProduitController extends AbstractController
 {
     #[Route(name: 'app_produit_index', methods: ['GET'])]
+    #[IsGranted('ROLE_USER')]
     public function index(ProduitRepository $produitRepository): Response
     {
+        $utilisateur = $this->getUser();
+
+        $produits = $produitRepository->findBy(['utilisateur' => $utilisateur]);
+
         return $this->render('produit/index.html.twig', [
-            'produits' => $produitRepository->findAll(),
+            'produits' => $produits,
         ]);
     }
 
