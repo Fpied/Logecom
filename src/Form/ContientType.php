@@ -16,7 +16,6 @@ class ContientType extends AbstractType
     {
         $builder
             ->add('quantite')
-            ->add('prixUnitaireCentime')
             ->add('commande', EntityType::class, [
                 'class' => Commande::class,
                 'choice_label' => 'id',

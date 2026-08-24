@@ -3,12 +3,11 @@
 namespace App\Form;
 
 use App\Entity\Image;
-use App\Entity\Produit;
-use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Validator\Constraints\File;
 
 class ImageType extends AbstractType
 {
@@ -19,6 +18,17 @@ class ImageType extends AbstractType
                 'label' => 'Choisir une image',
                 'mapped' => false,
                 'required' => $options['image_required'],
+                'constraints' => [
+                    new File([
+                        'maxSize' => '5M',
+                        'mimeTypes' => [
+                            'image/jpeg',
+                            'image/png',
+                            'image/gif',
+                        ],
+                        'mimeTypesMessage' => 'Veuillez télécharger une image valide (JPEG, PNG, GIF).',
+                    ]),
+                ],
             ])
             ->add('main_image', null, [
                 'label' => 'Image principale',
@@ -27,11 +37,7 @@ class ImageType extends AbstractType
             ->add('orderImage', null, [
                 'label' => "Ordre d'affichage",
             ])
-            ->add('produit', EntityType::class, [
-                'class' => Produit::class,
-                'choice_label' => 'title',
-                'label' => 'Produit',
-            ])
+            
         ;
     }
 

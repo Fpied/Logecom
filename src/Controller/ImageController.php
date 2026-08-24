@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Image;
 use App\Form\ImageType;
+use App\Entity\Produit;
 use App\Repository\ImageRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -25,10 +26,15 @@ final class ImageController extends AbstractController
         ]);
     }
 
-    #[Route('/new', name: 'app_image_new', methods: ['GET', 'POST'])]
-    public function new(Request $request, EntityManagerInterface $entityManager, SluggerInterface $slugger): Response
+    #[Route('/new/{id}', name: 'app_image_new', methods: ['GET', 'POST'])]
+    public function new(Request $request, Produit $produit, EntityManagerInterface $entityManager, SluggerInterface $slugger): Response
     {
+        if ($produit->getUtilisateur() !== $this->getUser()) {
+            throw $this->createAccessDeniedException('Accès interdit.');
+        }
+
         $image = new Image();
+        $image->setProduit($produit);
         $form = $this->createForm(ImageType::class, $image, ['image_required' => true]);
         $form->handleRequest($request);
 
@@ -67,6 +73,10 @@ final class ImageController extends AbstractController
     #[Route('/{id}/edit', name: 'app_image_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, Image $image, EntityManagerInterface $entityManager): Response
     {
+        if ($image->getProduit()->getUtilisateur() !== $this->getUser()) {
+            throw $this->createAccessDeniedException('Accès interdit.');
+        }
+
         $form = $this->createForm(ImageType::class, $image);
         $form->handleRequest($request);
 
@@ -85,6 +95,10 @@ final class ImageController extends AbstractController
     #[Route('/{id}', name: 'app_image_delete', methods: ['POST'])]
     public function delete(Request $request, Image $image, EntityManagerInterface $entityManager): Response
     {
+        if ($image->getProduit()->getUtilisateur() !== $this->getUser()) {
+            throw $this->createAccessDeniedException('Accès interdit.');
+        }
+
         if ($this->isCsrfTokenValid('delete'.$image->getId(), $request->getPayload()->getString('_token'))) {
             $entityManager->remove($image);
             $entityManager->flush();

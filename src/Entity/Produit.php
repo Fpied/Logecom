@@ -46,11 +46,7 @@ class Produit
     #[ORM\OneToMany(targetEntity: Image::class, mappedBy: 'produit')]
     private Collection $images;
 
-    /**
-     * @var Collection<int, Avis>
-     */
-    #[ORM\OneToMany(targetEntity: Avis::class, mappedBy: 'produit')]
-    private Collection $avis;
+
 
     /**
      * @var Collection<int, Ajouter>
@@ -67,7 +63,6 @@ class Produit
     public function __construct()
     {
         $this->images = new ArrayCollection();
-        $this->avis = new ArrayCollection();
         $this->ajouters = new ArrayCollection();
         $this->contients = new ArrayCollection();
     }
@@ -203,35 +198,6 @@ class Produit
         return $this;
     }
 
-    /**
-     * @return Collection<int, Avis>
-     */
-    public function getAvis(): Collection
-    {
-        return $this->avis;
-    }
-
-    public function addAvi(Avis $avi): static
-    {
-        if (!$this->avis->contains($avi)) {
-            $this->avis->add($avi);
-            $avi->setProduit($this);
-        }
-
-        return $this;
-    }
-
-    public function removeAvi(Avis $avi): static
-    {
-        if ($this->avis->removeElement($avi)) {
-            // set the owning side to null (unless already changed)
-            if ($avi->getProduit() === $this) {
-                $avi->setProduit(null);
-            }
-        }
-
-        return $this;
-    }
 
     /**
      * @return Collection<int, Ajouter>

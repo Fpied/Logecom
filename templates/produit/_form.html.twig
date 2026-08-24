@@ -5,6 +5,8 @@
     }
 }) }}
 
+    <input type="hidden" name="_categorie_csrf" value="{{ csrf_token('categorie-create') }}">
+
     
     {{ form_row(form.title) }}
     {{ form_row(form.description) }}

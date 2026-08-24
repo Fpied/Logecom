@@ -24,6 +24,11 @@ export default class extends Controller {
         event.detail.options.create = (input, callback) => {
             const data = new FormData();
             data.append('nom', input);
+            const form = this.element.closest('form');
+            const csrfToken = form.querySelector(
+                'input[name="_categorie_csrf"]'
+            ).value;
+            data.append('_token', csrfToken);
 
             fetch(this.urlValue, {
                 method: 'POST',

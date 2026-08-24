@@ -49,11 +49,7 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(targetEntity: Produit::class, mappedBy: 'utilisateur')]
     private Collection $produits;
 
-    /**
-     * @var Collection<int, Avis>
-     */
-    #[ORM\OneToMany(targetEntity: Avis::class, mappedBy: 'utilisateur')]
-    private Collection $avis;
+    
 
     /**
      * @var Collection<int, Adresse>
@@ -73,7 +69,6 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
     public function __construct()
     {
         $this->produits = new ArrayCollection();
-        $this->avis = new ArrayCollection();
         $this->adresses = new ArrayCollection();
         $this->commandes = new ArrayCollection();
 
@@ -215,35 +210,6 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    /**
-     * @return Collection<int, Avis>
-     */
-    public function getAvis(): Collection
-    {
-        return $this->avis;
-    }
-
-    public function addAvi(Avis $avi): static
-    {
-        if (!$this->avis->contains($avi)) {
-            $this->avis->add($avi);
-            $avi->setUtilisateur($this);
-        }
-
-        return $this;
-    }
-
-    public function removeAvi(Avis $avi): static
-    {
-        if ($this->avis->removeElement($avi)) {
-            // set the owning side to null (unless already changed)
-            if ($avi->getUtilisateur() === $this) {
-                $avi->setUtilisateur(null);
-            }
-        }
-
-        return $this;
-    }
 
     /**
      * @return Collection<int, Adresse>

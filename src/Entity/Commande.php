@@ -27,6 +27,9 @@ class Commande
     #[ORM\ManyToOne(inversedBy: 'commandes')]
     private ?Utilisateur $utilisateur = null;
 
+    #[ORM\ManyToOne]
+    private ?Adresse $adresse = null;
+
     #[ORM\OneToOne(mappedBy: 'commande', cascade: ['persist', 'remove'])]
     private ?Paiement $paiement = null;
 
@@ -91,6 +94,15 @@ class Commande
     {
         $this->utilisateur = $utilisateur;
 
+        return $this;
+    }
+
+    public function getAdresse():?Adresse{
+        return $this->adresse;
+    }
+
+    public function setAdresse(?Adresse $adresse): static{
+        $this->adresse = $adresse;
         return $this;
     }
 

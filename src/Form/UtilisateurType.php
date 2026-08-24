@@ -26,8 +26,10 @@ class UtilisateurType extends AbstractType
             ->add('email', EmailType::class, [
                 'label' => 'Adresse e-mail',
             ])
-            ->add('password', PasswordType::class, [
-                'label' => 'Mot de passe',
+            ->add('plainPassword', PasswordType::class, [
+                'label' => 'Nouveau mot de passe',
+                "mapped" => false,
+                "required" => false,
             ])
             ->add('pseudo', TextType::class, [
                 'label' => 'Pseudo',

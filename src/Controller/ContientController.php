@@ -10,8 +10,10 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[Route('/contient')]
+#[IsGranted('ROLE_ADMIN')]
 final class ContientController extends AbstractController
 {
     #[Route(name: 'app_contient_index', methods: ['GET'])]
@@ -30,6 +32,11 @@ final class ContientController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+
+            $produit = $contient->getProduit();
+
+            $contient->setPrixUnitaireCentime($produit->getCentPrice()
+            );
             $entityManager->persist($contient);
             $entityManager->flush();
 

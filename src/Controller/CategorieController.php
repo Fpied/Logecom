@@ -25,6 +25,12 @@ final class CategorieController extends AbstractController
         if (!$this->getUser()) {
             throw $this->createAccessDeniedException('Accès interdit.');
         }
+
+        if(!$this->isCsrfTokenValid('categorie-create', $request->request->getString('_token'))){
+            return $this->json([
+                'error' => 'Token CSRF invalide.',
+            ], Response::HTTP_FORBIDDEN);
+        }
         $nom = trim($request->request->getString('nom'));
 
         if ($nom === ''){

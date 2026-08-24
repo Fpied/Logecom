@@ -10,6 +10,9 @@ use App\Entity\Adresse;
 use App\Entity\Utilisateur;
 use App\Form\AdresseType;
 use App\Entity\Contient;
+use App\Repository\PaiementRepository;
+use App\Entity\Paiement;
+use App\Repository\AdresseRepository;im
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -19,6 +22,7 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Stripe\StripeClient;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
+
 
 #[Route('/commande')]
 final class CommandeController extends AbstractController
@@ -282,7 +286,7 @@ final class CommandeController extends AbstractController
     methods: ['GET']
     )]
 
-    public function paiementSuccess(Request $request, EntityManagerInterface $entityManager, #[Autowire('%env(STRIPE_SECRET_KEY)%')]
+    public function paiementSuccess(Request $request, EntityManagerInterface $entityManager, PaiementRepository $paiementRepository, ProduitRepository $produitRepository, #[Autowire('%env(STRIPE_SECRET_KEY)%')]
         string $stripeSecretKey
     ): Response {
         $stripeSessionId = $request->query->get('session_id');
@@ -307,19 +311,37 @@ final class CommandeController extends AbstractController
             return $this->redirectToRoute('app_commande_paiement');
         }
 
+        $paiementExistant = $paiementRepository->findOneBy([
+            'reference_transaction' => $checkoutSession->id,
+        ]);
+
+        if ($paiementExistant !== null) {
+            return $this->render('commande/confirmation.html.twig', [
+                'stripe_session_id' => $checkoutSession->id,
+            ]);
+        }
+
             // ICI
             $utilisateur = $this->getUser();
 
-            if(!$utilisateur instanceof Utilisateur) {
-                return $this->redirectToRoute('connexion');
+            if($utilisateur instanceof Utilisateur) {
+                $panier = $utilisateur->getPanier();
+
+                if($panier === null){
+                    return $this->redirectToRoute('app_panier');
+
+                
+                }
+            } 
+            else 
+            {
+                $panierSession = $request->getSession()->get('panier', []);
+
+                if ($panierSession === []){
+                    return $this->redirectToRoute('app_panier');
+                }
             }
 
-            $panier = $utilisateur->getPanier();
-
-            if($panier === null){
-                return $this->redirectToRoute('app_panier');
-
-            }
 
             $commande = new Commande();
             $commande->setDateCommande(new \DateTime());
@@ -328,26 +350,88 @@ final class CommandeController extends AbstractController
 
             $total = 0;
 
-            foreach($panier->getAjouters() as $ligne){
-                $total += $ligne->getProduit()->getCentPrice() * $ligne->getQuantite();
+            if ($utilisateur instanceof Utilisateur){
+                foreach($panier->getAjouters() as $ligne){
+                    $total += $ligne->getProduit()->getCentPrice() * $ligne->getQuantite();
+                }
+
+            } else {
+                foreach ($panierSession as $produitId => $quantite){
+                    $produit = $produitRepository->find($produitId);
+
+                    if ($produit === null){
+                        continue;
+                    }
+                    $total += $produit->getCentPrice() * $quantite;
+                }
             }
+
 
             $commande->setMontantTotalCentimes($total);
 
-            foreach($panier->getAjouters() as $ligne){
-                $contient = new Contient();
-                $contient->setCommande($commande);
-                $contient->setProduit($ligne->getProduit());
-                $contient->setQuantite($ligne->getQuantite());
-                $contient->setPrixUnitaireCentime($ligne->getProduit()->getCentPrice());
+            if ($checkoutSession->amount_total !== $total) {
+                throw $this->createAccessDeniedException(
+                    'Le montant payé ne correspond pas au montant de la commande.'
+                );
+            }
 
-                $entityManager->persist($contient);
+            $paiement = new Paiement();
+            $paiement->setAmountincents($checkoutSession->amount_total);
+            $paiement->setPaymentDate(new \DateTime());
+            $paiement->setPaymentMethod('stripe');
+            $paiement->setStatut($checkoutSession->payment_status);
+            $paiement->setReferenceTransaction($checkoutSession->id);
+            $paiement->setCommande($commande);
+
+            $entityManager->persist($paiement);
+
+            if ($utilisateur instanceof Utilisateur){
+
+                foreach ($panier->getAjouters() as $ligne){
+                    $contient = new Contient();
+                    $contient->setCommande($commande);
+                    $contient->setProduit($ligne->getProduit());
+                    $contient->setQuantite($ligne->getQuantite());
+                    $contient->setPrixUnitaireCentime(
+                        $ligne->getProduit()->getCentPrice()
+                    );
+
+                    $entityManager->persist($contient);
+
+
+                }
+
+            } else {
+                foreach ($panierSession as $produitId => $quantite){
+                    $produit = $produitRepository->find($produitId);
+
+                    if ($produit === null){
+                        continue;
+                    }
+
+                    $contient = new Contient();
+                    $contient->setCommande($commande);
+                    $contient->setProduit($produit);
+                    $contient->setQuantite($quantite);
+                    $contient->setPrixUnitaireCentime(
+                        $produit->getCentPrice()
+                    );
+
+                    $entityManager->persist($contient);
+                }
             }
 
             $entityManager->persist($commande);
-            foreach($panier->getAjouters() as $ligne){
-                $entityManager->remove($ligne);
+            if($utilisateur instanceof Utilisateur){
+                foreach($panier->getAjouters() as $ligne){
+                    $entityManager->remove($ligne);
+                }
+
+            } else {
+                $request->getSession()->remove('panier');
+
             }
+            
             $entityManager->flush();
 
             

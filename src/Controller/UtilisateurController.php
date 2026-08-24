@@ -9,6 +9,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 
 #[Route('/utilisateur')]
@@ -36,7 +37,7 @@ final class UtilisateurController extends AbstractController
     }
 
     #[Route('/{id}/edit', name: 'app_utilisateur_edit', methods: ['GET', 'POST'])]
-    public function edit(Request $request, Utilisateur $utilisateur, EntityManagerInterface $entityManager): Response
+    public function edit(Request $request, Utilisateur $utilisateur, EntityManagerInterface $entityManager, UserPasswordHasherInterface $passwordHasher): Response
     {
         if ($utilisateur !== $this->getUser()){
             throw $this->createAccessDeniedException('Accès interdit.');
@@ -46,6 +47,13 @@ final class UtilisateurController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $plainPassword = $form->get('plainPassword')->getData();
+
+            if ($plainPassword !== null && $plainPassword !== '') {
+                $hashedPassword = $passwordHasher->hashPassword($utilisateur, $plainPassword);
+                $utilisateur->setPassword($hashedPassword);
+            }
+
             $entityManager->flush();
 
             return $this->redirectToRoute('app_login', [], Response::HTTP_SEE_OTHER);
