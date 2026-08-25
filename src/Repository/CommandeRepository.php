@@ -16,6 +16,17 @@ class CommandeRepository extends ServiceEntityRepository
         parent::__construct($registry, Commande::class);
     }
 
+    public function findCommandesVisiblesByUtilisateur($utilisateur): array{
+        return $this->createQueryBuilder('c')
+        ->andWhere('c.utilisateur = :utilisateur')
+        ->andWhere('c.status NOT IN (:statutsCaches)')
+        ->setParameter('utilisateur', $utilisateur)
+        ->setParameter('statutsCaches', ['annulee', 'remboursee'])
+        ->orderBy('c.date_commande', 'DESC')
+        ->getQuery()
+        ->getResult();
+    }
+
     //    /**
     //     * @return Commande[] Returns an array of Commande objects
     //     */

@@ -23,7 +23,7 @@
                 <td>{{ (commande.montantTotalCentimes / 100)|number_format(2, ',', ' ') }} €</td>
                 <td>{{ commande.status }}</td>
                 <td>
-                    <a href="{{ path('app_commande_show', {'id': commande.id}) }}">show</a>
+                    <a href="{{ path('app_commande_show', {'id': commande.id}) }}">ouvrir</a>
                 </td>
             </tr>
         {% else %}

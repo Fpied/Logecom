@@ -12,7 +12,7 @@ use App\Form\AdresseType;
 use App\Entity\Contient;
 use App\Repository\PaiementRepository;
 use App\Entity\Paiement;
-use App\Repository\AdresseRepository;im
+use App\Repository\AdresseRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -33,7 +33,7 @@ final class CommandeController extends AbstractController
     {
         $utilisateur = $this->getUser();
 
-        $commandes = $commandeRepository->findBy([
+        $commandes = $commandeRepository->findCommandesVisiblesByUtilisateur([
             'utilisateur' => $utilisateur,
         ]);
 
@@ -281,12 +281,8 @@ final class CommandeController extends AbstractController
     }
 
     #[Route(
-    '/paiement/success',
-    name: 'app_commande_paiement_success',
-    methods: ['GET']
-    )]
-
-    public function paiementSuccess(Request $request, EntityManagerInterface $entityManager, PaiementRepository $paiementRepository, ProduitRepository $produitRepository, #[Autowire('%env(STRIPE_SECRET_KEY)%')]
+    '/paiement/success', name: 'app_commande_paiement_success', methods: ['GET'])]
+    public function paiementSuccess(Request $request, EntityManagerInterface $entityManager, PaiementRepository $paiementRepository, ProduitRepository $produitRepository, AdresseRepository $adresseRepository, #[Autowire('%env(STRIPE_SECRET_KEY)%')]
         string $stripeSecretKey
     ): Response {
         $stripeSessionId = $request->query->get('session_id');
@@ -342,11 +338,19 @@ final class CommandeController extends AbstractController
                 }
             }
 
+            $adresseId = $request->getSession()->get('commande_adresse_id');
+            $adresse = $adresseRepository->find($adresseId);
+
+            if($adresse === null){
+                return $this->redirectToRoute('app_commande_adresse');
+            }
+
 
             $commande = new Commande();
             $commande->setDateCommande(new \DateTime());
             $commande->setUtilisateur($utilisateur);
             $commande->setStatus('payee');
+            $commande->setAdresse($adresse);
 
             $total = 0;
 
@@ -433,6 +437,7 @@ final class CommandeController extends AbstractController
             }
             
             $entityManager->flush();
+            $request->getSession()->remove('commande_adresse_id');
 
             
         
@@ -456,14 +461,40 @@ final class CommandeController extends AbstractController
 
 
     #[Route('/{id}', name: 'app_commande_delete', methods: ['POST'])]
-    public function delete(Request $request, Commande $commande, EntityManagerInterface $entityManager): Response
+    public function delete(Request $request, Commande $commande, EntityManagerInterface $entityManager, #[Autowire('%env(STRIPE_SECRET_KEY)%')] string $stripeSecretKey): Response
     {
         if ($commande->getUtilisateur() !== $this->getUser()) {
             throw $this->createAccessDeniedException('Accès interdit.');
         }
 
         if ($this->isCsrfTokenValid('delete'.$commande->getId(), $request->getPayload()->getString('_token'))) {
-            $entityManager->remove($commande);
+            $paiement = $commande->getPaiement();
+            if ($paiement !== null && $paiement->getStatut() === 'paid'){
+                $stripe = new StripeClient($stripeSecretKey);
+
+                $checkoutSession = $stripe->checkout->sessions->retrieve(
+                    $paiement->getReferenceTransaction()
+                );
+
+                $paymentIntentId = $checkoutSession->payment_intent;
+
+                if ($paymentIntentId === null){
+                    throw $this->createNotFoundException(
+                        'Aucun paiement Stripe associé à cette commande.'
+                    );
+                }
+
+                $stripe->refunds->create(
+                    [
+                        'payment_intent' => $paymentIntentId,
+                    ]
+                );
+
+                $paiement->setStatut('refunded');
+                $commande->setStatus('remboursee');
+            } else {
+                $commande->setStatus('annulee');
+            }
             $entityManager->flush();
         }
 
