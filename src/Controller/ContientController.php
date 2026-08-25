@@ -35,6 +35,10 @@ final class ContientController extends AbstractController
 
             $produit = $contient->getProduit();
 
+            if($produit === null){
+                throw $this->createNotFoundException('Produit introuvable.');
+            }
+
             $contient->setPrixUnitaireCentime($produit->getCentPrice()
             );
             $entityManager->persist($contient);

@@ -14,15 +14,27 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\String\Slugger\SluggerInterface;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[Route('/image')]
 final class ImageController extends AbstractController
 {
     #[Route(name: 'app_image_index', methods: ['GET'])]
+    #[IsGranted('ROLE_USER')]
     public function index(ImageRepository $imageRepository): Response
     {
+        $utilisateur = $this->getUser();
+        $imagesUtilisateur = [];
+
+        foreach ($imageRepository->findAll() as $image){
+            $produit = $image->getProduit();
+
+            if ($produit !== null && $produit->getUtilisateur() === $utilisateur){
+                $imagesUtilisateur[] = $image;
+            }
+        }
         return $this->render('image/index.html.twig', [
-            'images' => $imageRepository->findAll(),
+            'images' => $imagesUtilisateur,
         ]);
     }
 
@@ -65,6 +77,9 @@ final class ImageController extends AbstractController
     #[Route('/{id}', name: 'app_image_show', methods: ['GET'])]
     public function show(Image $image): Response
     {
+        if($image->getProduit()->getUtilisateur() !== $this->getUser()){
+            throw $this->createAccessDeniedException('Accès interdit.');
+        }
         return $this->render('image/show.html.twig', [
             'image' => $image,
         ]);
