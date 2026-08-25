@@ -98,6 +98,9 @@ final class ProduitController extends AbstractController
     #[Route('/{id}', name: 'app_produit_show', methods: ['GET'])]
     public function show(Produit $produit): Response
     {
+        if(!$produit->isActif() && $produit->getUtilisateur() !== $this->getUser()){
+            throw $this->createNotFoundException('Produit introuvable.');
+        }
         return $this->render('produit/show.html.twig', [
             'produit' => $produit,
         ]);
@@ -153,7 +156,7 @@ final class ProduitController extends AbstractController
         }
         
         if ($this->isCsrfTokenValid('delete'.$produit->getId(), $request->getPayload()->getString('_token'))) {
-            $entityManager->remove($produit);
+            $produit->setActif(false);
             $entityManager->flush();
         }
 

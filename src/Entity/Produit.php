@@ -7,6 +7,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: ProduitRepository::class)]
 class Produit
@@ -23,9 +24,11 @@ class Produit
     private ?string $description = null;
 
     #[ORM\Column]
+    #[Assert\PositiveOrZero(message: 'le prix ne peut pas être négatif.')]
     private ?int $cent_price = null;
 
     #[ORM\Column]
+    #[Assert\PositiveOrZero(message: 'Le stock ne peut pas être négatif.')]
     private ?int $stock = null;
 
     #[ORM\Column(length: 30)]

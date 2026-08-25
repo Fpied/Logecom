@@ -20,6 +20,7 @@ class Ajouter
     private ?Panier $panier = null;
 
     #[ORM\ManyToOne(inversedBy: 'ajouters')]
+    #[ORM\JoinColumn(onDelete: 'CASCADE')]
     private ?Produit $produit = null;
 
     public function getId(): ?int
