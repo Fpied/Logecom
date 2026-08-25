@@ -5,6 +5,8 @@ namespace App\Repository;
 use App\Entity\Produit;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
+// LockMode permet d’indiquer à Doctrine quel type de verrou on veut appliquer à une ligne de la base.
+use Doctrine\DBAL\LockMode;
 
 /**
  * @extends ServiceEntityRepository<Produit>
@@ -14,6 +16,18 @@ class ProduitRepository extends ServiceEntityRepository
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, Produit::class);
+    }
+
+    
+
+    // findWithLock(int $id) reçoit l'identifiant du produit.
+    public function findWithLock(int $id): ?Produit{
+        return $this->getEntityManager()
+            ->find(
+                Produit::class,
+                $id,
+                LockMode::PESSIMISTIC_WRITE
+            );
     }
 
     //    /**

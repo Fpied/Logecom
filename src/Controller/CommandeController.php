@@ -20,6 +20,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Stripe\StripeClient;
+use Stripe\Exception\ApiErrorException;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
@@ -33,9 +34,9 @@ final class CommandeController extends AbstractController
     {
         $utilisateur = $this->getUser();
 
-        $commandes = $commandeRepository->findCommandesVisiblesByUtilisateur([
-            'utilisateur' => $utilisateur,
-        ]);
+        $commandes = $commandeRepository->findCommandesVisiblesByUtilisateur(
+            $utilisateur,
+        );
 
 
         return $this->render('commande/index.html.twig', [
@@ -188,6 +189,13 @@ final class CommandeController extends AbstractController
 
             foreach ($lignes as $ligne){
                 $produit = $ligne->getProduit();
+
+                $quantite = $ligne->getQuantite();
+
+                if ($produit === null || !$produit->isActif() || $quantite < 1 || $quantite > $produit->getStock()){
+                    return $this->redirectToRoute('app_panier');
+                }
+
                 $lineItems[] = [
                     'price_data' => [
                         'currency' => 'eur',
@@ -196,7 +204,7 @@ final class CommandeController extends AbstractController
                         ],
                         'unit_amount' => $produit->getCentPrice(),
                     ],
-                    'quantity' => $ligne->getQuantite(),
+                    'quantity' => $quantite,
                 ];
             }
         } else {
@@ -208,6 +216,10 @@ final class CommandeController extends AbstractController
                 if ($produit === null) {
                     continue;
                 }
+
+                if(!is_int($quantite) || $quantite < 1 || $quantite > $produit->getStock() || !$produit->isActif()){
+                    return $this->redirectToRoute('app_panier');
+                }  
 
                 $lineItems[] = [
                     'price_data' => [
@@ -224,6 +236,12 @@ final class CommandeController extends AbstractController
 
 
         $adresseId = $session->get('commande_adresse_id');
+
+        if ($lineItems === []){
+            $this->addFlash('warning', 'votre panier est vide.');
+
+            return $this->redirectToRoute('app_panier');
+        }
 
         if ($adresseId === null) {
             return $this->redirectToRoute('app_commande_adresse');
@@ -254,23 +272,37 @@ final class CommandeController extends AbstractController
 
             $stripe = new StripeClient($stripeSecretKey);
 
-            $checkoutSession = $stripe->checkout->sessions->create([
-                'mode' => 'payment',
+            try{
+                $checkoutSession = $stripe->checkout->sessions->create([
+                    'mode' => 'payment',
 
-                'line_items' => $lineItems,
+                    'line_items' => $lineItems,
 
-                'success_url' => $this->generateUrl(
-                    'app_commande_paiement_success',
-                    [],
-                    UrlGeneratorInterface::ABSOLUTE_URL
-                ) . '?session_id={CHECKOUT_SESSION_ID}',
+                    'success_url' => $this->generateUrl(
+                        'app_commande_paiement_success',
+                        [],
+                        UrlGeneratorInterface::ABSOLUTE_URL
+                    ) . '?session_id={CHECKOUT_SESSION_ID}',
 
-                'cancel_url' => $this->generateUrl(
-                    'app_commande_paiement',
-                    [],
-                    UrlGeneratorInterface::ABSOLUTE_URL
-                ),
-            ]);
+                    'cancel_url' => $this->generateUrl(
+                        'app_commande_paiement',
+                        [],
+                        UrlGeneratorInterface::ABSOLUTE_URL
+                    ),
+                ]);
+
+            } catch(ApiErrorException $e){
+                $this->addFlash(
+                    'error',
+                    'Le service de paiement est temporairement indisponible.'
+                );
+                return $this->redirectToRoute('app_commande_paiement');
+
+            }
+
+            
+
+            $session->set('stripe_checkout_session_id', $checkoutSession->id);
 
             return $this->redirect($checkoutSession->url);
         }
@@ -287,16 +319,35 @@ final class CommandeController extends AbstractController
     ): Response {
         $stripeSessionId = $request->query->get('session_id');
 
+        $expectedStripeSessionId = $request
+            ->getSession()
+            ->get('stripe_checkout_session_id');
+
+        if($expectedStripeSessionId === null || $stripeSessionId !== $expectedStripeSessionId){
+            throw $this->createAccessDeniedException('Session de paiement Stripe invalide.');
+        }
+
         if (!$stripeSessionId) {
             return $this->redirectToRoute('app_commande_paiement');
         }
 
         $stripe = new StripeClient($stripeSecretKey);
 
-        $checkoutSession = $stripe
-            ->checkout
-            ->sessions
-            ->retrieve($stripeSessionId);
+        try{
+            $checkoutSession = $stripe
+                ->checkout
+                ->sessions
+                ->retrieve($stripeSessionId);
+        } catch(ApiErrorException $e){
+            $this->addFlash(
+                'error',
+                'Le service de paiement est temporairement indisponible.'
+            );
+
+            return $this->redirectToRoute('app_commande_paiement');
+        }
+
+        
 
         if ($checkoutSession->payment_status !== 'paid') {
             $this->addFlash(
@@ -345,6 +396,10 @@ final class CommandeController extends AbstractController
                 return $this->redirectToRoute('app_commande_adresse');
             }
 
+            if($utilisateur instanceof Utilisateur && $adresse->getUtilisateur() !== $utilisateur){
+                throw $this->createAccessDeniedException('Adresse invalide.');
+            }
+
 
             $commande = new Commande();
             $commande->setDateCommande(new \DateTime());
@@ -356,6 +411,12 @@ final class CommandeController extends AbstractController
 
             if ($utilisateur instanceof Utilisateur){
                 foreach($panier->getAjouters() as $ligne){
+                    $produit = $ligne->getProduit();
+                    $quantite = $ligne->getQuantite();
+
+                    if($produit === null || !$produit->isActif() || $quantite < 1 || $quantite > $produit->getStock()){
+                        return $this->redirectToRoute('app_panier');
+                    }
                     $total += $ligne->getProduit()->getCentPrice() * $ligne->getQuantite();
                 }
 
@@ -365,6 +426,10 @@ final class CommandeController extends AbstractController
 
                     if ($produit === null){
                         continue;
+                    }
+
+                    if(!is_int($quantite) || $quantite < 1 || $quantite > $produit->getStock() || !$produit->isActif()){
+                        return $this->redirectToRoute('app_panier');
                     }
                     $total += $produit->getCentPrice() * $quantite;
                 }
@@ -389,55 +454,99 @@ final class CommandeController extends AbstractController
 
             $entityManager->persist($paiement);
 
-            if ($utilisateur instanceof Utilisateur){
+            $entityManager->beginTransaction();
 
-                foreach ($panier->getAjouters() as $ligne){
-                    $contient = new Contient();
-                    $contient->setCommande($commande);
-                    $contient->setProduit($ligne->getProduit());
-                    $contient->setQuantite($ligne->getQuantite());
-                    $contient->setPrixUnitaireCentime(
-                        $ligne->getProduit()->getCentPrice()
-                    );
+            try{
+                if ($utilisateur instanceof Utilisateur){
 
-                    $entityManager->persist($contient);
+                    foreach ($panier->getAjouters() as $ligne){
+                        $produit = $produitRepository->findWithLock($ligne->getProduit()->getId());
+
+                        if($produit === null || !$produit->isActif() || $ligne->getQuantite() > $produit->getStock()){
+                            $entityManager->rollback();
+
+                            $paymentIntentId = $checkoutSession->payment_intent;
+
+                            if ($paymentIntentId !== null) {
+                                $stripe->refunds->create([
+                                    'payment_intent' => $paymentIntentId,
+                                ]);
+                            }
+
+                            return $this->redirectToRoute('app_panier');
+                        }
+
+                        $produit->setStock($produit->getStock() - $ligne->getQuantite());
+
+                        $contient = new Contient();
+                        $contient->setCommande($commande);
+                        $contient->setProduit($produit);
+                        $contient->setQuantite($ligne->getQuantite());
+                        $contient->setPrixUnitaireCentime(
+                            $produit->getCentPrice()
+                        );
+
+                        $entityManager->persist($contient);
 
 
-                }
-
-            } else {
-                foreach ($panierSession as $produitId => $quantite){
-                    $produit = $produitRepository->find($produitId);
-
-                    if ($produit === null){
-                        continue;
                     }
 
-                    $contient = new Contient();
-                    $contient->setCommande($commande);
-                    $contient->setProduit($produit);
-                    $contient->setQuantite($quantite);
-                    $contient->setPrixUnitaireCentime(
-                        $produit->getCentPrice()
-                    );
+                } else {
+                    foreach ($panierSession as $produitId => $quantite){
+                        $produit = $produitRepository->findWithLock($produitId);
 
-                    $entityManager->persist($contient);
+                        if($produit === null || !$produit->isActif() || !is_int($quantite) || $quantite < 1 || $quantite > $produit->getStock()){
+
+                            $entityManager->rollback();
+
+                            $paymentIntentId = $checkoutSession->payment_intent;
+
+                            if ($paymentIntentId !== null) {
+                                $stripe->refunds->create([
+                                    'payment_intent' => $paymentIntentId,
+                                ]);
+                            }
+
+                            return $this->redirectToRoute('app_panier');
+                        }
+
+                        $produit->setStock($produit->getStock() - $quantite);
+
+                        $contient = new Contient();
+                        $contient->setCommande($commande);
+                        $contient->setProduit($produit);
+                        $contient->setQuantite($quantite);
+                        $contient->setPrixUnitaireCentime(
+                            $produit->getCentPrice()
+                        );
+
+                        $entityManager->persist($contient);
+                    }
                 }
+
+                $entityManager->persist($commande);
+                if($utilisateur instanceof Utilisateur){
+                    foreach($panier->getAjouters() as $ligne){
+                        $entityManager->remove($ligne);
+                    }
+
+                } 
+                
+                $entityManager->flush();
+                $entityManager->commit();
+            } catch (\Throwable $e){
+                $entityManager->rollback();
+                throw $e;
             }
 
-            $entityManager->persist($commande);
-            if($utilisateur instanceof Utilisateur){
-                foreach($panier->getAjouters() as $ligne){
-                    $entityManager->remove($ligne);
-                }
-
-            } else {
+            if (!$utilisateur instanceof Utilisateur) {
                 $request->getSession()->remove('panier');
-
             }
+
             
-            $entityManager->flush();
+            
             $request->getSession()->remove('commande_adresse_id');
+            $request->getSession()->remove('stripe_checkout_session_id');
 
             
         
@@ -451,7 +560,9 @@ final class CommandeController extends AbstractController
     #[Route('/{id}', name: 'app_commande_show', methods: ['GET'])]
     public function show(Commande $commande): Response
     {
-        if ($commande->getUtilisateur() !== $this->getUser()) {
+        $utilisateur = $this->getUser();
+
+        if(!$utilisateur instanceof Utilisateur || $commande->getUtilisateur() !== $utilisateur){
             throw $this->createAccessDeniedException('Accès interdit.');
         }
         return $this->render('commande/show.html.twig', [
@@ -463,7 +574,9 @@ final class CommandeController extends AbstractController
     #[Route('/{id}', name: 'app_commande_delete', methods: ['POST'])]
     public function delete(Request $request, Commande $commande, EntityManagerInterface $entityManager, #[Autowire('%env(STRIPE_SECRET_KEY)%')] string $stripeSecretKey): Response
     {
-        if ($commande->getUtilisateur() !== $this->getUser()) {
+        $utilisateur = $this->getUser();
+
+        if(!$utilisateur instanceof Utilisateur || $commande->getUtilisateur() !== $utilisateur){
             throw $this->createAccessDeniedException('Accès interdit.');
         }
 
@@ -472,23 +585,40 @@ final class CommandeController extends AbstractController
             if ($paiement !== null && $paiement->getStatut() === 'paid'){
                 $stripe = new StripeClient($stripeSecretKey);
 
-                $checkoutSession = $stripe->checkout->sessions->retrieve(
-                    $paiement->getReferenceTransaction()
-                );
-
-                $paymentIntentId = $checkoutSession->payment_intent;
-
-                if ($paymentIntentId === null){
-                    throw $this->createNotFoundException(
-                        'Aucun paiement Stripe associé à cette commande.'
+                try {
+                    $checkoutSession = $stripe->checkout->sessions->retrieve(
+                        $paiement->getReferenceTransaction()
                     );
+
+                    $paymentIntentId = $checkoutSession->payment_intent;
+
+                    if ($paymentIntentId === null) {
+                        throw $this->createNotFoundException(
+                            'Aucun paiement Stripe associé à cette commande.'
+                        );
+                    }
+
+                    $stripe->refunds->create([
+                        'payment_intent' => $paymentIntentId,
+                    ]);
+                } catch (ApiErrorException $e) {
+                    $this->addFlash(
+                        'error',
+                        'Le remboursement n’a pas pu être effectué.'
+                    );
+
+                    return $this->redirectToRoute('app_commande_index');
                 }
 
-                $stripe->refunds->create(
-                    [
-                        'payment_intent' => $paymentIntentId,
-                    ]
-                );
+                foreach($commande->getContients() as $ligne){
+                    $produit = $ligne->getProduit();
+
+                    if($produit !== null){
+                        $produit->setStock(
+                            $produit->getStock() + $ligne->getQuantite()
+                        );
+                    }
+                }
 
                 $paiement->setStatut('refunded');
                 $commande->setStatus('remboursee');
