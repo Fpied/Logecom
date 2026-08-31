@@ -1,0 +1,10 @@
+.page__contact{
+    width: 80%;
+    margin: 0 auto;
+}
+@media(min-width: 1024px){
+    .form-container{
+        max-width: 600px;
+        margin: 0 auto;
+    }
+}

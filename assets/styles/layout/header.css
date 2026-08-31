@@ -95,3 +95,86 @@
     grid-column: 3;
     grid-row: 3;
 }
+
+@media (min-width: 360px){
+    .etoile_gauche {
+    display: grid;
+    grid-template-columns: repeat(3, 24px);
+    grid-template-rows: repeat(3, 24px);
+    gap: 5px;
+    }
+
+    .etoile_gauche .premier_etoile:nth-child(1) {
+        grid-column: 1;
+        grid-row: 1;
+    }
+
+    .etoile_gauche .premier_etoile:nth-child(2) {
+        grid-column: 2;
+        grid-row: 1;
+    }
+
+    .etoile_gauche .premier_etoile:nth-child(3) {
+        grid-column: 3;
+        grid-row: 1;
+    }
+
+    .etoile_gauche .premier_etoile:nth-child(4) {
+        grid-column: 1;
+        grid-row: 2;
+    }
+
+    .etoile_gauche .premier_etoile:nth-child(5) {
+        grid-column: 2;
+        grid-row: 2;
+    }
+
+    .etoile_gauche .premier_etoile:nth-child(6) {
+        grid-column: 1;
+        grid-row: 3;
+    }
+    .title{
+        font-size: 50px;
+    }
+    .premier_etoile{
+        height: 24px;
+        width: 24px;
+    }
+
+    .etoile_droite {
+    display: grid;
+    grid-template-columns: repeat(3, 24px);
+    grid-template-rows: repeat(3, 24px);
+    gap: 5px;
+    }
+
+    .etoile_droite .premier_etoile:nth-child(1) {
+        grid-column: 1;
+        grid-row: 1;
+    }
+
+    .etoile_droite .premier_etoile:nth-child(2) {
+        grid-column: 2;
+        grid-row: 1;
+    }
+
+    .etoile_droite .premier_etoile:nth-child(3) {
+        grid-column: 3;
+        grid-row: 1;
+    }
+
+    .etoile_droite .premier_etoile:nth-child(4) {
+        grid-column: 2;
+        grid-row: 2;
+    }
+
+    .etoile_droite .premier_etoile:nth-child(5) {
+        grid-column: 3;
+        grid-row: 2;
+    }
+
+    .etoile_droite .premier_etoile:nth-child(6) {
+        grid-column: 3;
+        grid-row: 3;
+    }
+}

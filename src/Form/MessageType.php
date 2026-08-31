@@ -44,7 +44,7 @@ class MessageType extends AbstractType
             ->add('envoyer', SubmitType::class, [
                 'label' => 'Envoyer',
                 'attr' => [
-                    'class' => 'form-submit',
+                    'class' => 'view-button page__contact',
                 ],
             ]);
             

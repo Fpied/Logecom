@@ -1,7 +1,8 @@
 .cart-page{
     width: min(100% - 24px, 900px);
     margin: 0 auto;
-    padding: 24px 0 40px;
+    padding: 24px 0 100px;
+    flex: 1;
 }
 
 .cart-lines{

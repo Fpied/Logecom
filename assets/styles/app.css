@@ -5,6 +5,7 @@
 @import url('./layout/header.css');
 @import url('./layout/navigation.css');
 @import url('./layout/main.css');
+@import url('./layout/footer.css');
 
 @import url('./components/button.css');
 @import url('./components/product-card.css');
@@ -15,3 +16,5 @@
 @import url('./pages/product.css');
 @import url('./pages/dashboard.css');
 @import url('./pages/panier.css');
+@import url('./pages/presentation.css');
+@import url('./pages/contact.css');

@@ -11,6 +11,7 @@ use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Validator\Constraints\Length;
 
 class UtilisateurType extends AbstractType
 {
@@ -30,6 +31,12 @@ class UtilisateurType extends AbstractType
                 'label' => 'Nouveau mot de passe',
                 "mapped" => false,
                 "required" => false,
+                'constraints' => [
+                    new Length(
+                        min: 8,
+                        minMessage: 'Le mot de passe doit contenir au moins 8 caractères.'
+                    ),
+                ]
             ])
             ->add('pseudo', TextType::class, [
                 'label' => 'Pseudo',

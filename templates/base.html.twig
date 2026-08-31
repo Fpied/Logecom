@@ -23,5 +23,7 @@
     <body>
         {% include 'includes/header.html.twig' %}
         {% block body %}{% endblock %}
+        {% include 'includes/footer.html.twig' %}
+        {{ render(controller('App\\Controller\\PanierController::widget')) }}
     </body>
 </html>

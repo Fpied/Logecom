@@ -35,3 +35,6 @@
     object-fit: cover;
     display: block;
 }
+.produit-table{
+    margin: 0 auto;
+}

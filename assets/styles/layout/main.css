@@ -11,3 +11,27 @@ main {
     width: 25px;
     height: 25px;
 }
+
+.video{
+    width: 100%;
+    padding: 10px;
+}
+
+@media (min-width: 360px){
+    main{
+        max-width: 360px;
+        margin: 0 auto;
+        border-radius: 10%;
+
+    }
+}
+
+@media (min-width: 1024px) {
+    main{
+        max-width: 100%;
+        height: auto;
+        margin: 10px;
+        padding: 10px;
+    }
+    
+}

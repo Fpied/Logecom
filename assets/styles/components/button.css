@@ -20,4 +20,11 @@
 .cart-button {
     color: #000000;
     background: #ffff00;
+    max-width: 300px;
+    margin: 0 auto;
+}
+
+.button-produit{
+    max-width: 300px;
+    margin: 0 auto;
 }

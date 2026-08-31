@@ -1,0 +1,10 @@
+@media(min-width: 1024px){
+    .video{
+        width: 600px;
+    }
+
+    .text__presentation{
+        width: 600px;
+        margin: 0 auto;
+    }
+}

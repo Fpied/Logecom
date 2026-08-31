@@ -18,7 +18,7 @@ use App\Repository\ProduitRepository;
 final class PanierController extends AbstractController
 {
     #[Route('/panier', name: 'app_panier', methods: ['GET'])]
-public function index(
+    public function index(
     Request $request,
     AjouterRepository $ajouterRepository,
     ProduitRepository $produitRepository
@@ -39,8 +39,14 @@ public function index(
                 ]);
 
                 foreach ($lignes as $ligne) {
+                    $produit = $ligne->getProduit();
+
+                    if($produit === null || !$produit->isActif()){
+                        continue;
+                    }
+
                     $lignesPanier[] = [
-                        'produit' => $ligne->getProduit(),
+                        'produit' => $produit,
                         'quantite' => $ligne->getQuantite(),
                     ];
                 }
@@ -55,7 +61,7 @@ public function index(
             foreach ($panierSession as $produitId => $quantite) {
                 $produit = $produitRepository->find($produitId);
 
-                if ($produit === null) {
+                if ($produit === null || !$produit->isActif()) {
                     continue;
                 }
 
@@ -78,6 +84,73 @@ public function index(
             'lignesPanier' => $lignesPanier,
             'totalPanier' => $totalPanier,
         ]);
+    }
+
+    #[Route('/panier/widget', name:'app_panier_widget')]
+    public function widget(Request $request, AjouterRepository $ajouterRepository, 
+    ProduitRepository $produitRepository): Response {
+
+        $utilisateur = $this->getUser();
+        $lignesPanier = [];
+
+        /*
+        * Cas 1 : utilisateur connecté
+        * Le panier est récupéré depuis la base de données.
+        */
+        if ($utilisateur instanceof Utilisateur) {
+            $panier = $utilisateur->getPanier();
+
+            if ($panier !== null) {
+                $lignes = $ajouterRepository->findBy([
+                    'panier' => $panier,
+                ]);
+
+                foreach ($lignes as $ligne) {
+                    $produit = $ligne->getProduit();
+
+                    if($produit === null || !$produit->isActif()){
+                        continue;
+                    }
+
+                    $lignesPanier[] = [
+                        'produit' => $produit,
+                        'quantite' => $ligne->getQuantite(),
+                    ];
+                }
+            }
+        } else {
+            /*
+            * Cas 2 : visiteur
+            * Le panier est récupéré depuis la session.
+            */
+            $panierSession = $request->getSession()->get('panier', []);
+
+            foreach ($panierSession as $produitId => $quantite) {
+                $produit = $produitRepository->find($produitId);
+
+                if ($produit === null || !$produit->isActif()) {
+                    continue;
+                }
+
+                $lignesPanier[] = [
+                    'produit' => $produit,
+                    'quantite' => $quantite,
+                ];
+            }
+        }
+
+        $totalPanier = 0;
+
+        foreach ($lignesPanier as $ligne) {
+            $totalPanier +=
+                $ligne['produit']->getCentPrice()
+                * $ligne['quantite'];
+        }
+
+        return $this->render('panier/_widget.html.twig', [
+            'lignesPanier' => $lignesPanier,
+        ]);
+
     }
 
     #[Route(
@@ -112,7 +185,7 @@ public function index(
                 'Ce produit n’est pas disponible.'
             );
 
-            return $this->redirigerApresAjout($request, $produit);
+            return $this->redirigerApresAjout($produit);
         }
 
         /*
@@ -137,7 +210,7 @@ public function index(
                     'La quantité maximale disponible est déjà dans votre panier.'
                 );
 
-                return $this->redirigerApresAjout($request, $produit);
+                return $this->redirigerApresAjout($produit);
             }
 
             $panierSession[$produitId] = $quantiteActuelle + 1;
@@ -149,7 +222,7 @@ public function index(
                 'Le produit a été ajouté au panier.'
             );
 
-            return $this->redirigerApresAjout($request, $produit);
+            return $this->redirigerApresAjout($produit);
         }
 
         /*
@@ -181,7 +254,7 @@ public function index(
                 'La quantité maximale disponible est déjà dans votre panier.'
             );
 
-            return $this->redirigerApresAjout($request, $produit);
+            return $this->redirigerApresAjout($produit);
         }
 
         if ($lignePanier === null) {
@@ -207,7 +280,7 @@ public function index(
             'Le produit a été ajouté au panier.'
         );
 
-        return $this->redirigerApresAjout($request, $produit);
+        return $this->redirigerApresAjout($produit);
     }
 
     #[Route('/panier/supprimer/{id}', name: 'app_panier_supprimer', methods: ['POST'])]
@@ -264,14 +337,9 @@ public function index(
     }
 
     private function redirigerApresAjout(
-        Request $request,
         Produit $produit
     ): Response {
-        $referer = $request->headers->get('referer');
-
-        if ($referer !== null) {
-            return $this->redirect($referer);
-        }
+        
 
         return $this->redirectToRoute(
             'app_produit_show',

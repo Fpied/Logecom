@@ -6,56 +6,7 @@
 <div class="page">
 
     <main class="home-content">
-    <aside class="cart">
-    <h2>PANIER</h2>
-
-        {% if lignesPanier is empty %}
-            <p>Votre panier est vide.</p>
-        {% else %}
-            {% set totalPanier = 0 %}
-
-            {# On parcourt toutes les lignes uniquement pour calculer le total complet #}
-            {% for ligne in lignesPanier %}
-                {% set totalPanier =
-                    totalPanier
-                    + (ligne.produit.centPrice * ligne.quantite)
-                %}
-            {% endfor %}
-
-            {# On affiche seulement deux lignes du panier #}
-            {% for ligne in lignesPanier|slice(0, 2) %}
-                <div class="cart-item">
-                    <p>{{ ligne.produit.title }}</p>
-
-                    <p>
-                        {{ (
-                            (ligne.produit.centPrice * ligne.quantite) / 100
-                        )|number_format(2, ',', ' ') }} €
-                    </p>
-                </div>
-            {% endfor %}
-
-            {% if lignesPanier|length > 2 %}
-                <p class="cart-more">
-                    + {{ lignesPanier|length - 2 }} autre(s) produit(s)
-                </p>
-            {% endif %}
-
-            <hr>
-
-            <p class="cart-total">
-                <strong>Total :</strong>
-                {{ (totalPanier / 100)|number_format(2, ',', ' ') }} €
-            </p>
-            <a 
-                href="{{ path('app_panier') }}"
-                class="view-button"
-            >
-            Voir mon panier
-            </a>
-        {% endif %}
-    </aside>
-
+    
         <section class="featured-product">
             <h2>PRODUIT MIS EN AVANT</h2>
 

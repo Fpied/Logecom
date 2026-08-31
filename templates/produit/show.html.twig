@@ -24,11 +24,7 @@
     <table class="table">
         <tbody>
             <tr>
-                <th>Id</th>
-                <td>{{ produit.id }}</td>
-            </tr>
-            <tr>
-                <th>Title</th>
+                <th>Titre</th>
                 <td>{{ produit.title }}</td>
             </tr>
             <tr>
@@ -36,15 +32,15 @@
                 <td>{{ produit.description }}</td>
             </tr>
             <tr>
-                <th>Cent_price</th>
-                <td>{{ produit.centPrice }}</td>
+                <th>Prix</th>
+                <td>{{ (produit.centPrice / 100)|number_format(2, ',', ' ') }}</td>
             </tr>
             <tr>
                 <th>Stock</th>
                 <td>{{ produit.stock }}</td>
             </tr>
             <tr>
-                <th>State</th>
+                <th>Etat</th>
                 <td>{{ produit.state }}</td>
             </tr>
             <tr>
@@ -54,34 +50,29 @@
         </tbody>
     </table>
 
-    {% if app.user %}
-        {% if produit.actif and produit.stock > 0 %}
-            <form
-                action="{{ path('app_panier_ajouter', {'id': produit.id}) }}"
-                method="post"
+    
+    {% if produit.actif and produit.stock > 0 %}
+        <form
+            action="{{ path('app_panier_ajouter', {'id': produit.id}) }}"
+            method="post"
+        >
+            <input
+                type="hidden"
+                name="_token"
+                value="{{ csrf_token('ajouter-panier-' ~ produit.id) }}"
             >
-                <input
-                    type="hidden"
-                    name="_token"
-                    value="{{ csrf_token('ajouter-panier-' ~ produit.id) }}"
-                >
 
-                <button type="submit" class="btn">
-                    Ajouter au panier
-                </button>
-            </form>
-        {% else %}
-            <p>Produit indisponible.</p>
-        {% endif %}
+            <button type="submit" class="cart-button button-produit">
+                Ajouter au panier
+            </button>
+        </form>
     {% else %}
-        <a href="{{ path('app_login') }}" class="btn">
-            Connectez-vous pour ajouter ce produit au panier
-        </a>
+        <p>Produit indisponible.</p>
     {% endif %}
+    
 
-    <a href="{{ path('app_produit_index') }}">back to list</a>
+    <a href="{{ path('home') }}">Retour à la liste des produits</a>
 
-    <a href="{{ path('app_produit_edit', {'id': produit.id}) }}">edit</a>
 
     {{ include('produit/_delete_form.html.twig') }}
 </main>

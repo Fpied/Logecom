@@ -4,7 +4,7 @@
 }
 
 .nav_header_ul {
-    display: flex;
+    display: block;
     width: 100%;
     margin: 0;
     padding: 0;
@@ -19,7 +19,7 @@
 }
 
 .lien_nav {
-    display: flex;
+    display: block;
     align-items: center;
     justify-content: center;
 
@@ -29,8 +29,7 @@
     height: 50px;
     padding: 5px 4px;
 
-    font-family: 'futurama', sans-serif;
-    font-size: 0.5rem;
+    font-size: 1rem;
     letter-spacing: 0px;
     line-height: 1.1;
     text-align: center;
@@ -41,4 +40,18 @@
     border: 2px solid var(--yellow);
 
     overflow-wrap: anywhere;
+}
+
+@media (min-width: 360px) {
+    .lien_nav{
+        height: 100px;
+        font-size: 1rem;
+    }
+    .nav_header_ul{
+        display: flex;
+    }
+    .lien_nav{
+        display: flex;
+    }
+    
 }

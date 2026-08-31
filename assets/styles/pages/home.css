@@ -28,6 +28,7 @@
     border-radius: 12px;
     background: #ffffff;
     position: fixed;
+    color: var(--bg-dark);
 
     bottom: 20px;
     left: 50%;
@@ -37,4 +38,35 @@
 
 .cart h2 {
     margin-top: 0;
+}
+
+@media (min-width: 360px){
+    .featured-product{
+        width: 360px;
+        margin: 0 auto;
+    }
+    .cart{
+        width: 360px;
+        margin: 0 auto;
+    }
+    .page{
+        max-width: 80%;
+        margin: 0 auto;
+        border-radius: 50px;
+    }
+    
+}
+
+@media (min-width:1024px){
+    .home-content{
+        width: 100%;
+        padding: 0;
+    }
+    .featured-product{
+        width: 100%;
+        margin: 0 auto;
+    }
+    .page{
+        padding: 40px;
+    }
 }
