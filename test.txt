@@ -1,0 +1,3 @@
+numéro de carte : 4242 4242 4242 4242,
+Date d'expiration: 12/30,
+CVC: 123

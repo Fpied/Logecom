@@ -1,9 +1,17 @@
+// Ce fichier gère automatiquement la protection CSRF de mes formulaires. Le CSRF est une
+// faille de sécurité où un site malveillant pourrait faire exécuter une action à mon insu sur mon 
+// site (comme supprimer un produit), en profitant du fait que je suis connecté. Pour l'empêcher,
+// chaque formulaire sensible inclut un jeton unique que le serveur vérifie avant d'exécuter
+// l'action, pour s'assurer que la requête vient bien de mon site.
 const nameCheck = /^[-_a-zA-Z0-9]{4,22}$/;
 const tokenCheck = /^[-_/+a-zA-Z0-9]{24,}$/;
 
 // Generate and double-submit a CSRF token in a form field and a cookie, as defined by Symfony's SameOriginCsrfTokenManager
 // Use `form.requestSubmit()` to ensure that the submit event is triggered. Using `form.submit()` will not trigger the event
 // and thus this event-listener will not be executed.
+// Générer et soumettre deux fois un jeton CSRF dans un champ de formulaire et un cookie, tel que défini par SameOriginCsrfTokenManager de Symfony 
+// Utilisez `form.requestSubmit()` pour vous assurer que l'événement de soumission est déclenché. L'utilisation de `form.submit()` ne déclenchera pas l'événement 
+// et donc cet écouteur d'événements ne sera pas exécuté.
 document.addEventListener('submit', function (event) {
     generateCsrfToken(event.target);
 }, true);

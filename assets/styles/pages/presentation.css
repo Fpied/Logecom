@@ -1,6 +1,14 @@
+.video__presentation{
+    width: 300px;
+    height: 200px;
+    margin: 0 auto;
+    display: block;
+}
+
 @media(min-width: 1024px){
-    .video{
+    .video__presentation{
         width: 600px;
+        height: 400px;
     }
 
     .text__presentation{

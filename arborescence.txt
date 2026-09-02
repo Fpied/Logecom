@@ -1,0 +1,299 @@
+.
+├── arborescence.txt
+├── assets
+│   ├── app.js
+│   ├── controllers
+│   │   ├── categorie_controller.js
+│   │   ├── csrf_protection_controller.js
+│   │   └── hello_controller.js
+│   ├── controllers.json
+│   ├── stimulus_bootstrap.js
+│   └── styles
+│       ├── app.css
+│       ├── base
+│       │   ├── fonts.css
+│       │   ├── reset.css
+│       │   └── variables.css
+│       ├── components
+│       │   ├── button.css
+│       │   ├── forms.css
+│       │   ├── product-card.css
+│       │   └── tables.css
+│       ├── layout
+│       │   ├── footer.css
+│       │   ├── header.css
+│       │   ├── main.css
+│       │   └── navigation.css
+│       └── pages
+│           ├── contact.css
+│           ├── dashboard.css
+│           ├── home.css
+│           ├── panier.css
+│           ├── presentation.css
+│           └── product.css
+├── bin
+│   ├── console
+│   └── phpunit
+├── compose.override.yaml
+├── composer.json
+├── composer.lock
+├── compose.yaml
+├── config
+│   ├── bundles.php
+│   ├── packages
+│   │   ├── asset_mapper.yaml
+│   │   ├── cache.yaml
+│   │   ├── csrf.yaml
+│   │   ├── debug.yaml
+│   │   ├── doctrine_migrations.yaml
+│   │   ├── doctrine.yaml
+│   │   ├── framework.yaml
+│   │   ├── mailer.yaml
+│   │   ├── messenger.yaml
+│   │   ├── monolog.yaml
+│   │   ├── notifier.yaml
+│   │   ├── property_info.yaml
+│   │   ├── reset_password.yaml
+│   │   ├── routing.yaml
+│   │   ├── security.yaml
+│   │   ├── stripe.yaml
+│   │   ├── translation.yaml
+│   │   ├── twig.yaml
+│   │   ├── ux_turbo.yaml
+│   │   ├── validator.yaml
+│   │   └── web_profiler.yaml
+│   ├── preload.php
+│   ├── reference.php
+│   ├── routes
+│   │   ├── framework.yaml
+│   │   ├── security.yaml
+│   │   ├── ux_autocomplete.yaml
+│   │   └── web_profiler.yaml
+│   ├── routes.yaml
+│   └── services.yaml
+├── importmap.php
+├── migrations
+│   ├── Version20260716142942.php
+│   ├── Version20260721130452.php
+│   ├── Version20260722075534.php
+│   ├── Version20260722125007.php
+│   ├── Version20260724094533.php
+│   ├── Version20260724100219.php
+│   ├── Version20260729101323.php
+│   ├── Version20260731144622.php
+│   ├── Version20260824093335.php
+│   └── Version20260825073510.php
+├── phpunit.dist.xml
+├── public
+│   ├── css
+│   │   ├── font
+│   │   │   ├── futurama
+│   │   │   │   ├── fr-bold.ttf
+│   │   │   │   ├── fr-fal1.ttf
+│   │   │   │   ├── fr-fal2.ttf
+│   │   │   │   └── fr-title.ttf
+│   │   │   └── star_jedi
+│   │   │       ├── starjedi
+│   │   │       │   ├── sample003.jpg
+│   │   │       │   ├── Star Jedi font guide Word97.doc
+│   │   │       │   ├── starjedi hollow sample.jpg
+│   │   │       │   ├── starjedi sample.jpg
+│   │   │       │   ├── Starjedi.ttf
+│   │   │       │   └── Starjhol.ttf
+│   │   │       ├── starjout
+│   │   │       │   ├── Star Jedi Outline font guide Word97.doc
+│   │   │       │   ├── Star Jedi Outline sample.jpg
+│   │   │       │   └── Starjout.ttf
+│   │   │       ├── stjedise
+│   │   │       │   ├── StarJedi Special Edition font guide Word97.doc
+│   │   │       │   ├── stjedise sample.jpg
+│   │   │       │   └── STJEDISE.TTF
+│   │   │       └── stjelogo
+│   │   │           ├── logodoubleline samples.jpg
+│   │   │           ├── logomonoline samples.jpg
+│   │   │           ├── Star Jedi Logo font guide Word97.doc
+│   │   │           ├── Stjldbl1.ttf
+│   │   │           ├── Stjldbl2.ttf
+│   │   │           └── Strjmono.ttf
+│   │   ├── forms.css
+│   │   └── style-old.css
+│   ├── images
+│   │   ├── etoile.png
+│   │   └── Logologecom.png
+│   ├── index.php
+│   └── uploads
+│       └── images
+│           ├── ajouter-6a8eafc75f17d.png
+│           ├── claquette-6a61e9b0461ac.jpg
+│           ├── claquette-6a8eafc75fa55.jpg
+│           ├── commande-6a8eafc76035a.png
+│           ├── contient-6a8eafc760b8f.png
+│           ├── pantoufle-6a69cc22b1351.jpg
+│           ├── pantoufle-6a69d13714a71.jpg
+│           ├── pantoufle-6a69d293bc0e5.jpg
+│           └── ventilo-6a61fe0994fd7.png
+├── README.md
+├── src
+│   ├── Controller
+│   │   ├── AdminController.php
+│   │   ├── CategorieController.php
+│   │   ├── ClientController.php
+│   │   ├── CommandeController.php
+│   │   ├── ContactController.php
+│   │   ├── ContientController.php
+│   │   ├── ImageController.php
+│   │   ├── MainController.php
+│   │   ├── MessageController.php
+│   │   ├── PanierController.php
+│   │   ├── ProduitController.php
+│   │   ├── RegistrationController.php
+│   │   ├── ResetPasswordController.php
+│   │   ├── SecurityController.php
+│   │   └── UtilisateurController.php
+│   ├── Entity
+│   │   ├── Adresse.php
+│   │   ├── Ajouter.php
+│   │   ├── Categorie.php
+│   │   ├── Commande.php
+│   │   ├── Contient.php
+│   │   ├── Image.php
+│   │   ├── Message.php
+│   │   ├── Paiement.php
+│   │   ├── Panier.php
+│   │   ├── Produit.php
+│   │   ├── ResetPasswordRequest.php
+│   │   └── Utilisateur.php
+│   ├── Form
+│   │   ├── AdresseType.php
+│   │   ├── CategorieType.php
+│   │   ├── ChangePasswordFormType.php
+│   │   ├── ContientType.php
+│   │   ├── ImageType.php
+│   │   ├── MessageType.php
+│   │   ├── PaiementType.php
+│   │   ├── ProduitType.php
+│   │   ├── RegistrationFormType.php
+│   │   ├── ResetPasswordRequestFormType.php
+│   │   └── UtilisateurType.php
+│   ├── Kernel.php
+│   ├── Repository
+│   │   ├── AdresseRepository.php
+│   │   ├── AjouterRepository.php
+│   │   ├── CategorieRepository.php
+│   │   ├── CommandeRepository.php
+│   │   ├── ContientRepository.php
+│   │   ├── ImageRepository.php
+│   │   ├── MessageRepository.php
+│   │   ├── PaiementRepository.php
+│   │   ├── PanierRepository.php
+│   │   ├── ProduitRepository.php
+│   │   ├── ResetPasswordRequestRepository.php
+│   │   └── UtilisateurRepository.php
+│   ├── Security
+│   │   ├── EmailVerifier.php
+│   │   └── LoginFormAuthenticator.php
+│   └── Service
+├── symfony.lock
+├── templates
+│   ├── admin
+│   │   ├── commandes.html.twig
+│   │   └── index.html.twig
+│   ├── adresse
+│   │   └── new.html.twig
+│   ├── avis
+│   │   ├── _delete_form.html.twig
+│   │   ├── edit.html.twig
+│   │   ├── _form.html.twig
+│   │   ├── index.html.twig
+│   │   ├── new.html.twig
+│   │   └── show.html.twig
+│   ├── base.html.twig
+│   ├── bundles
+│   │   └── TwigBundle
+│   │       └── Exception
+│   │           └── error403.html.twig
+│   ├── categorie
+│   │   ├── _delete_form.html.twig
+│   │   ├── edit.html.twig
+│   │   ├── _form.html.twig
+│   │   ├── index.html.twig
+│   │   ├── new.html.twig
+│   │   └── show.html.twig
+│   ├── client
+│   │   └── index.html.twig
+│   ├── commande
+│   │   ├── confirmation.html.twig
+│   │   ├── _delete_form.html.twig
+│   │   ├── _form.html.twig
+│   │   ├── index.html.twig
+│   │   ├── new.html.twig
+│   │   ├── show.html.twig
+│   │   └── validation.html.twig
+│   ├── contient
+│   │   ├── _delete_form.html.twig
+│   │   ├── edit.html.twig
+│   │   ├── _form.html.twig
+│   │   ├── index.html.twig
+│   │   ├── new.html.twig
+│   │   └── show.html.twig
+│   ├── image
+│   │   ├── _delete_form.html.twig
+│   │   ├── edit.html.twig
+│   │   ├── _form.html.twig
+│   │   ├── new.html.twig
+│   │   └── show.html.twig
+│   ├── includes
+│   │   ├── footer.html.twig
+│   │   └── header.html.twig
+│   ├── main
+│   │   ├── connexion.html.twig
+│   │   ├── contact.html.twig
+│   │   ├── index.html.twig
+│   │   └── presentation.html.twig
+│   ├── message
+│   │   ├── _delete_form.html.twig
+│   │   ├── edit.html.twig
+│   │   ├── _form.html.twig
+│   │   ├── index.html.twig
+│   │   ├── new.html.twig
+│   │   └── show.html.twig
+│   ├── paiement
+│   │   ├── _delete_form.html.twig
+│   │   ├── edit.html.twig
+│   │   ├── _form.html.twig
+│   │   ├── index.html.twig
+│   │   ├── new.html.twig
+│   │   └── show.html.twig
+│   ├── panier
+│   │   ├── index.html.twig
+│   │   └── _widget.html.twig
+│   ├── produit
+│   │   ├── _delete_form.html.twig
+│   │   ├── edit.html.twig
+│   │   ├── _form.html.twig
+│   │   ├── index.html.twig
+│   │   ├── new.html.twig
+│   │   └── show.html.twig
+│   ├── registration
+│   │   ├── check_email.html.twig
+│   │   ├── confirmation_email.html.twig
+│   │   └── register.html.twig
+│   ├── reset_password
+│   │   ├── check_email.html.twig
+│   │   ├── email.html.twig
+│   │   ├── request.html.twig
+│   │   └── reset.html.twig
+│   ├── security
+│   │   └── login.html.twig
+│   └── utilisateur
+│       ├── _delete_form.html.twig
+│       ├── edit.html.twig
+│       ├── _form.html.twig
+│       ├── index.html.twig
+│       ├── new.html.twig
+│       └── show.html.twig
+├── tests
+│   └── bootstrap.php
+└── translations
+
+56 directories, 241 files

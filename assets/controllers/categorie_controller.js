@@ -1,11 +1,17 @@
-import { Controller } from '@hotwired/stimulus';
+// Contrôleur Stimulus pour le champ autocomplete de sélection de catégorie.
+// Permet de créer une nouvelle catégorie à la volée si elle n'existe pas
+// encore dans la liste, en l'envoyant en AJAX vers le contrôleur Symfony
+// (route de création de catégorie), sans recharger la page.
+import { Controller } from '@hotwired/stimulus'; // importation Javascript qui va cherche la classe Controller dans la bibliothèque Stimulus 
+// Le framework JS utilisé par Symfony
 
-/* stimulusFetch: 'lazy' */
+// Déclare une propriété url , de type texte , que Stimulus va récupérer automatiquement depuis le HTML et rendre disponible dans le JS
 export default class extends Controller {
     static values = {
         url: String,
     };
 
+    // connect() active l'écoute d'un événement spécifique dès que le contrôleur est branché sur l'élément
     connect() {
         this.element.addEventListener(
             'autocomplete:pre-connect',
@@ -13,6 +19,7 @@ export default class extends Controller {
         );
     }
 
+    // disconnect() nettoie proprement cette écoute quand l'élément disparaît, pour éviter le gaspillage de ressources
     disconnect() {
         this.element.removeEventListener(
             'autocomplete:pre-connect',
@@ -20,6 +27,7 @@ export default class extends Controller {
         );
     }
 
+    // onPreConnect() est la fonction qui sera appelée lors de l'événement 'autocomplete:pre-connect'
     onPreConnect = (event) => {
         event.detail.options.create = (input, callback) => {
             const data = new FormData();
@@ -30,6 +38,8 @@ export default class extends Controller {
             ).value;
             data.append('_token', csrfToken);
 
+            // Le fetch sert à envoyer le nom de la nouvelle catégorie au serveur Symfony ( en POST, avec le token CSRF),
+            // pour que la catégorie soit créée en baase de données , sans recharger la page.
             fetch(this.urlValue, {
                 method: 'POST',
                 body: data,

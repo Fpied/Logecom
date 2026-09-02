@@ -36,7 +36,11 @@
             <ul class="nav_header_ul">
                 <li class="li_header"><a class="lien_nav" href="{{ path('home')}}">ACCUEIL</a></li>
                 <li class="li_header"><a class="lien_nav" href="{{ path('presentation')}}">à Propos</a></li>
-                <li class="li_header"><a class="lien_nav" href="{{ path('app_login')}}">CONNEXION</a></li>
+                {% if app.user %}
+                    <li class="li_header"><a class="lien_nav" href="{{ path('app_client') }}">TABLEAU DE BORD</a></li>
+                {% else %}
+                    <li class="li_header"><a class="lien_nav" href="{{ path('app_login') }}">CONNEXION</a></li>
+                {% endif %}
                 <li class="li_header"><a class="lien_nav" href="{{ path('contact')}}">CONTACTEZ-NOUS</a></li>
             </ul>
         </nav>
