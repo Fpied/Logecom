@@ -3,7 +3,7 @@
     font-style: normal;
     font-weight: 400;
     font-display: block;
-    src: url(data:font/woff;base64,/* tout ton contenu Base64 */);
+    src: url("/css/font/star_jedi/starjedi/Starjedi.ttf");
 }
 
 @font-face {
