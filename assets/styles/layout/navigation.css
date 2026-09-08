@@ -45,7 +45,7 @@
 @media (min-width: 360px) {
     .lien_nav{
         height: 100px;
-        font-size: 1rem;
+        font-size: 0.7rem;
     }
     .nav_header_ul{
         display: flex;
@@ -54,4 +54,11 @@
         display: flex;
     }
     
+}
+
+@media(min-width: 768px){
+    .lien_nav{
+        height: 100px;
+        font-size: 1rem;
+    }
 }

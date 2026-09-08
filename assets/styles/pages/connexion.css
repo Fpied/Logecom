@@ -1,0 +1,27 @@
+.form-title{
+    margin-top: 50px;
+}
+
+.oeil__de__singe{
+    position: relative;
+    flex: 1;
+}
+#eye{
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+
+
+}
+#inputPassword{
+    width: 100%;
+}
+
+@media (min-width: 600px) {
+    .login-form{
+        max-width: 600px;
+        margin: 0 auto;
+    }
+    
+}

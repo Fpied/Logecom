@@ -43,3 +43,6 @@ form{
     align-items: center;
     gap: 8px;
 }
+input{
+    text-align: center;
+}

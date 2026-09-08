@@ -1,10 +1,9 @@
 .identite_site {
     display: flex;
-    justify-content: space-between;
+    justify-content: center;
+    gap: 5px;
 
     margin-top: 5px;
-    margin-right: 5px;
-    margin-left: 0px;
 }
 
 .premier_etoile {
@@ -56,7 +55,7 @@
 
 .title {
     font-family: 'futurama', sans-serif;
-    font-size: 30px;
+    font-size: 1.5rem;
 }
 
 .etoile_droite {
@@ -134,7 +133,7 @@
         grid-row: 3;
     }
     .title{
-        font-size: 50px;
+        font-size: 2rem;
     }
     .premier_etoile{
         height: 24px;

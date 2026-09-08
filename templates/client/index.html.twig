@@ -32,6 +32,10 @@
             Modifier Profil
         </a>
 
+        <a href="{{ path('app_stripe_connect') }}" class="dashboard-button">
+            Connecter mon compte Stripe
+        </a>
+
         {% if is_granted('ROLE_ADMIN') %}
             <a href="{{ path('app_admin') }}" class="view-button">
                 Administration

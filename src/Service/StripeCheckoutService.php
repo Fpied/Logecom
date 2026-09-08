@@ -46,4 +46,60 @@ class StripeCheckoutService
             'payment_intent' => $paymentIntentId,
         ]);
     }
+
+    public function creerTransfert(string $stripeAccountId, int $montantCentimes, string $paymentIntentId): \Stripe\Transfer
+    {
+        return $this->stripeClient->transfers->create([
+            'amount' => $montantCentimes,
+            'currency' => 'eur',
+            'destination' => $stripeAccountId,
+            'source_transaction' => $paymentIntentId,
+        ]);
+    }
+
+    public function creerCompteConnecte(string $email): \Stripe\V2\Core\Account
+    {
+        return $this->stripeClient->v2->core->accounts->create([
+            'contact_email' => $email,
+            'display_name'=> $email,
+            'identity'=> [
+                'country' => 'FR',
+            ],
+            'dashboard' => 'none',
+            'defaults' => [
+                'responsibilities' => [
+                    'fees_collector' => 'application',
+                    'losses_collector' => 'application',
+                ],
+            ],
+            'configuration' => [
+                'recipient' => [
+                    'capabilities' => [
+                        'stripe_balance' => [
+                            'stripe_transfers' => [
+                                'requested' => true,
+
+                            ],
+                            
+                        ],
+                    ],
+                ],
+            ],
+        ]);
+    }
+
+    public function creerLienOnboarding(string $accountId, string $refreshUrl, string $returnUrl): \Stripe\V2\Core\AccountLink
+    {
+        return $this->stripeClient->v2->core->accountLinks->create([
+            'account' => $accountId,
+            'use_case' => [
+                'type' => 'account_onboarding',
+                'account_onboarding' => [
+                    'configurations' => ['recipient'],
+                    'refresh_url' => $refreshUrl,
+                    'return_url' => $returnUrl,
+                ],
+            ],
+        ]);
+    }
 }

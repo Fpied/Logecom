@@ -7,15 +7,21 @@
 
     <main class="home-content">
     
-        <section class="featured-product">
+        <section class="featured-product" data-controller="product-search">
             <h2>PRODUIT MIS EN AVANT</h2>
 
             {% if produits is not empty %}
 
-                <div class="products-grid">
+            <div class="search-bar">
+                <input class="input__search" type="text" id='product-search' placeholder="Rechercher un produit ..." data-product-search-target="input" data-action="input->product-search#search">
+                <button class="button__search cart-button" type="button" data-action="click->product-search#search">Rechercher</button>
+            </div>
+
+
+                <div class="products-grid" data-product-search-target="grid">
 
                     {% for produit in produits %}
-                        <article class="product-card">
+                        <article class="product-card" data-name="{{ produit.title|lower }}">
                             
                             <div class="product-image">
                                 {% set imagePrincipale = null %}
@@ -87,6 +93,8 @@
                         </article>
                     {% endfor %}
                 </div>
+
+                <div class="pagination" id="pagination-controls" data-product-search-target="pagination"></div>
             
             {% else %}
                 <p>Aucun produit disponible pour le moment.</p>

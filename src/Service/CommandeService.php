@@ -83,6 +83,41 @@ class CommandeService
 
         $this->entityManager->flush();
 
+                $commissionTotale = 100; // 1€ en centimes
+        $montantsParVendeur = [];
+
+            foreach($commande->getContients() as $contient) {
+                $vendeur = $contient->getProduit()->getUtilisateur();
+                $montantLigne = $contient->getPrixUnitaireCentime() * $contient->getQuantite();
+
+                if (!isset($montantsParVendeur[$vendeur->getId()])) {
+                    $montantsParVendeur[$vendeur->getId()] = [
+                        'vendeur' => $vendeur,
+                        'montant' => 0,
+                    ];
+                }
+
+                $montantsParVendeur[$vendeur->getId()]['montant'] += $montantLigne;
+            }
+
+            $paymentIntentId = $checkoutSession->payment_intent;
+
+            foreach ($montantsParVendeur as $data) {
+                $vendeur = $data['vendeur'];
+                $montantBrut = $data['montant'];
+
+                $partCommission = (int) round($commissionTotale * ($montantBrut / $total));
+                $montantNet = $montantBrut - $partCommission;
+
+                if ($vendeur->getStripeAccountId() !== null) {
+                    $this->stripeCheckoutService->creerTransfert(
+                        $vendeur->getStripeAccountId(),
+                        $montantNet,
+                        $paymentIntentId
+                    );
+                }
+            }
+
         $this->entityManager->commit();
         } catch (\Throwable $e){
             $this->entityManager->rollback();
