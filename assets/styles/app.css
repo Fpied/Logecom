@@ -19,4 +19,6 @@
 @import url('./pages/presentation.css');
 @import url('./pages/contact.css');
 @import url('./pages/connexion.css');
+@import url('./pages/creationCompte.css');
+@import url('./pages/reset-password.css');
 /* cette page permet d'envoyer le CSS dans toutes mes pages */

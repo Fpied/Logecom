@@ -33,6 +33,7 @@ export default class extends Controller {
         this.paginationTarget.innerHTML = "";
         for (let i = 1; i <= totalPages; i++){
             const btnPagination = document.createElement("button");
+            btnPagination.classList.add("btnPagination");
             btnPagination.textContent = i;
             this.paginationTarget.appendChild(btnPagination);
 

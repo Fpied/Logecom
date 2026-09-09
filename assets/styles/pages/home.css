@@ -54,11 +54,15 @@
     text-align: center;
     margin: 0 auto;
     width: 110px;
+    min-width: 300px;
     
 }
 
 .button__search{
     margin: 15px auto;
+}
+.btnPagination{
+    font-size: 1.5rem;
 }
 
 @media (min-width: 360px){
