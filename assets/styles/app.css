@@ -21,4 +21,5 @@
 @import url('./pages/connexion.css');
 @import url('./pages/creationCompte.css');
 @import url('./pages/reset-password.css');
+@import url('./pages/edit.css');
 /* cette page permet d'envoyer le CSS dans toutes mes pages */

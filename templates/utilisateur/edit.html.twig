@@ -3,15 +3,19 @@
 {% block title %}Modification profils{% endblock %}
 
 {% block body %}
-<main class="form-container">
-    <h1>Modification profils</h1>
+<div class="page page__modifier">
+    <main class="form-container">
+        <h1>Modification profils</h1>
 
-    {{ include('utilisateur/_form.html.twig', {'button_label': 'Modifications'}) }}
+        {{ include('utilisateur/_form.html.twig', {'button_label': 'Modifications'}) }}
 
-    <a href="{{ path('app_client') }}" class="btn btn-secondary">
-            Retour au tableau de bord
-        </a>
+        <a href="{{ path('app_client') }}" class="btn btn-secondary">
+                Retour au tableau de bord
+            </a>
 
-    {{ include('utilisateur/_delete_form.html.twig') }}
-</main>
+        {{ include('utilisateur/_delete_form.html.twig') }}
+    </main>
+
+</div>
+
 {% endblock %}
